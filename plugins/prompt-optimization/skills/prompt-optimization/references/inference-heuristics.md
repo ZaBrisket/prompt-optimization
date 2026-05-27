@@ -1,5 +1,7 @@
 # Inference Heuristics — Step 0C Signal Lookup, Sniff Rules, Confidence Calibration
 
+> **Calibration stamp:** This reference is skill-internal methodology (Step 0C inference heuristics), not Anthropic product facts — it does not require Phase 1.5 re-verification.
+
 This reference is loaded by Phase 0 Step 0C, which generates inferred answers for every Phase 1 question before the widget call. The point is to populate widget options with the user's *likely* answers so they can confirm with a click rather than typing — not to bypass the widget.
 
 ## Operating principle
@@ -159,5 +161,5 @@ The user confirms or edits each via Widget Calls 1 and 2. Inferences populate op
 
 - See `SKILL.md` Phase 0 Step 0C for the structured output template.
 - See `SKILL.md` Phase 1 for how the inferences populate Widget Calls 1, 2, 3a, 3b.
-- See [[task-heuristics]] for task-type-specific handling once task type is confirmed.
-- See [[orchestrated-research]] when the sniff rule activates and orchestrated-research becomes the lead option.
+- See [task-heuristics.md](task-heuristics.md) for task-type-specific handling once task type is confirmed.
+- See [orchestrated-research.md](orchestrated-research.md) when the sniff rule activates and orchestrated-research becomes the lead option.

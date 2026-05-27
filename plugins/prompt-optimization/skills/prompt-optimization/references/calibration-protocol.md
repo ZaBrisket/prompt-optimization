@@ -206,4 +206,4 @@ The Phase 6A QC summary's Phase 1.5 row reads PASS: calibration current, model-v
 
 ## Sources
 
-The query set, source-trust hierarchy, and delta structure are derived from [[opus-4-7-config]]'s configuration sweep (accessed 2026-05-20) and from `SKILL.md` Step 1.5B's own specification. The fallback chain reflects observed Anthropic doc-host migrations (`docs.anthropic.com` → `platform.claude.com`, `docs.claude.com` → `code.claude.com`) as of 2026-05-20.
+The query set, source-trust hierarchy, and delta structure are derived from [opus-4-7-config.md](opus-4-7-config.md)'s configuration sweep (accessed 2026-05-20) and from `SKILL.md` Step 1.5B's own specification. The fallback chain reflects observed Anthropic doc-host migrations (`docs.anthropic.com` → `platform.claude.com`, `docs.claude.com` → `code.claude.com`) as of 2026-05-20.

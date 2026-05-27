@@ -1,5 +1,7 @@
 # Best Practices — Prep Tips and Common Pitfalls
 
+> **Calibration stamp:** This reference is user-facing guidance and skill-internal methodology, not Anthropic product facts — it does not require Phase 1.5 re-verification.
+
 This reference is user-facing — written for the person invoking the skill, not for the planner running it. It covers how to prepare a draft prompt before running prompt-optimization, the differences between the standard and orchestrated-research variants, and the most common ways drafts go off the rails before the skill even starts.
 
 ## How to prepare a draft prompt before running this skill
@@ -126,7 +128,7 @@ If your existing prompt is already producing the outcome you want, the skill's P
 ## Cross-references
 
 - See `SKILL.md` Optimization Protocol for the full phase sequence.
-- See [[task-heuristics]] for task-type-specific guidance once Phase 1 confirms task type.
-- See [[orchestrated-research]] for the full orchestrator deliverable structure.
-- See [[opus-4-7-config]] for what's deprecated on Opus 4.7 (informs the "stale parameters" pitfall).
+- See [task-heuristics.md](task-heuristics.md) for task-type-specific guidance once Phase 1 confirms task type.
+- See [orchestrated-research.md](orchestrated-research.md) for the full orchestrator deliverable structure.
+- See [opus-4-7-config.md](opus-4-7-config.md) for what's deprecated on Opus 4.7 (informs the "stale parameters" pitfall).
 - See `SKILL.md` Deliverable Contract for the partition rules behind the "edit the prompt afterward" pitfall.

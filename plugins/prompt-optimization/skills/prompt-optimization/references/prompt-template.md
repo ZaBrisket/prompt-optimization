@@ -1,5 +1,7 @@
 # Prompt Templates — Standard and Orchestrator
 
+> **Calibration stamp:** This reference is skill-internal methodology (prompt templates and embedding-without-bias rules), not Anthropic product facts — it does not require Phase 1.5 re-verification.
+
 This reference is loaded by Phase 4 (Produce Optimized Prompt). It provides the standard optimized-prompt template, the orchestrator template (which cross-references `orchestrated-research.md` Section 10 for the CLAUDE.md structure rather than restating it), and the embedding-without-bias rules that govern how Phase 2 landscape insights are surfaced in the prompt.
 
 ## Partition discipline — read first
@@ -167,8 +169,8 @@ Full version of the permissible / not-permissible table sketched in `SKILL.md` P
 
 ## Cross-references
 
-- See [[opus-4-7-config]] for what goes in `<deployment_config>` and why.
-- See [[orchestrated-research]] Section 10 for the orchestrator `CLAUDE.md` body template.
-- See [[task-heuristics]] for task-type-specific enhancements to apply within each template.
+- See [opus-4-7-config.md](opus-4-7-config.md) for what goes in `<deployment_config>` and why.
+- See [orchestrated-research.md](orchestrated-research.md) Section 10 for the orchestrator `CLAUDE.md` body template.
+- See [task-heuristics.md](task-heuristics.md) for task-type-specific enhancements to apply within each template.
 - See `SKILL.md` Phase 4 for the embedding-landscape-without-bias decision tree.
 - See `SKILL.md` Phase 6B for the pre-write strip check that enforces the partition at write time.

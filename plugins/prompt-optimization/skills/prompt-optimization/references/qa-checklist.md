@@ -1,5 +1,7 @@
 # QA Checklist — Phase-by-Phase Gate
 
+> **Calibration stamp:** This reference is skill-internal methodology (the phase-by-phase QA gate), not Anthropic product facts — it does not require Phase 1.5 re-verification.
+
 This reference is consumed twice per run:
 
 1. **Before Phase 4 delivery** — as the pre-delivery QA gate (`SKILL.md` Quality Assurance Checklist section at the end).
