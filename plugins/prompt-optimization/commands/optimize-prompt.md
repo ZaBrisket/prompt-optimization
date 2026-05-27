@@ -1,6 +1,6 @@
 ---
 name: optimize-prompt
-description: Optimize a draft prompt, system message, CLAUDE.md, or multi-agent orchestrator into production-grade instructions for Claude Opus 4.7. Runs the full phased protocol with live documentation calibration and, where eligible, orchestrated multi-agent landscape research.
+description: Optimize a draft prompt, system message, CLAUDE.md, or multi-agent orchestrator into production-grade instructions for Claude Opus 4.7. Runs the full phased protocol with live documentation calibration and, where eligible, orchestrated multi-agent landscape research. Not for one-off content writing, code generation, or answering a prompt's own question rather than improving the prompt itself.
 argument-hint: <draft prompt text, a file path to a draft, or a description of what to optimize>
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: prompt-optimization
-description: "Transform draft prompts into production-grade instructions for Claude Opus 4.7. Triggers when a user provides a draft prompt, system message, or CLAUDE.md to improve — or asks to optimize, refine, harden, or enhance a prompt; wants to design a multi-agent research workflow, orchestrate parallel subagents in Claude Code CLI, or build a CLAUDE.md dispatching multiple research agents; mentions 'prompt engineering'; or pastes a prompt with intent to improve it. Applies Opus 4.7 best practices (adaptive thinking, xhigh effort, anti-overtriggering, completion-verification, explicit tool-use and subagent-spawn instructions, long-context verification posture) and runs mandatory live web research against Anthropic documentation to calibrate to the target deployment (API, Claude Code CLI, claude.ai, Cowork (Desktop), Managed Agents)."
+description: "Transform draft prompts into production-grade instructions for Claude Opus 4.7. Triggers when a user provides a draft prompt, system message, or CLAUDE.md to improve — or asks to optimize, refine, harden, or enhance a prompt; wants to design a multi-agent research workflow, orchestrate parallel subagents in Claude Code CLI, or build a CLAUDE.md dispatching multiple research agents; mentions 'prompt engineering'; or pastes a prompt with intent to improve it. Applies Opus 4.7 best practices (adaptive thinking, xhigh effort, anti-overtriggering, completion-verification, explicit tool-use and subagent-spawn instructions, long-context verification posture) and runs mandatory live web research against Anthropic documentation to calibrate to the target deployment (API, Claude Code CLI, claude.ai, Cowork (Desktop), Managed Agents). Not for one-off content writing, code generation, or answering a prompt's own question rather than improving the prompt itself."
 ---
 
 # Prompt Optimization for Claude Opus 4.7
@@ -376,7 +376,7 @@ Identify issues in these categories. Cross-reference against [references/task-he
 
 **Opus 4.7 anti-patterns.** Cross-reference the Phase 1.5 Current Practices Delta before applying this check. If calibration identified new anti-patterns or deprecated behaviors, fold them in. If calibration confirmed baseline is current, proceed as-is.
 
-For the full Opus 4.7 anti-pattern table — emphasis discipline, deprecated parameters (`budget_tokens`, `output_format`, prefilling), guardrail gaps, orchestrator under-delegation, tool-use defaults — see [references/task-heuristics.md §Opus 4.7 Anti-Patterns](references/task-heuristics.md). Apply every row that matches the draft; flag in Phase 5 delta which rows triggered fixes.
+For the full Opus 4.7 anti-pattern table — emphasis discipline, deprecated parameters (`budget_tokens`, `output_format`, prefilling), guardrail gaps, orchestrator under-delegation, tool-use defaults — see [references/task-heuristics.md §Opus 4.7 Anti-Patterns](references/task-heuristics.md#opus-47-anti-patterns). Apply every row that matches the draft; flag in Phase 5 delta which rows triggered fixes.
 
 **Comprehensiveness deficits (from Phase 2, as refined by Phase 2.5):** Missing sub-domains that remain in scope after user clarification, no debate-handling instructions for controversies confirmed relevant, undefined temporal scope, unaddressed edge cases.
 

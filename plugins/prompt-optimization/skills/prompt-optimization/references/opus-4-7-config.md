@@ -81,6 +81,8 @@ client.messages.create(
 )
 ```
 
+> The web-search tool version above is calibration-stamped — Phase 1.5 Query 5 confirms the current `web_search_*` tool version at runtime before it lands in an optimized prompt.
+
 **Structured JSON output via `output_config.format`:**
 ```python
 client.messages.create(
@@ -124,7 +126,7 @@ client.messages.create(
 | `low` | Short, scoped, latency-sensitive work that is not intelligence-sensitive. |
 | `medium` | Cost-sensitive work that can trade off some intelligence. |
 | `high` | Minimum for intelligence-sensitive work. Balances token usage and capability. |
-| `xhigh` | **Default on Opus 4.7.** Best results for most coding and agentic tasks. |
+| `xhigh` | **Claude Code default on Opus 4.7** (Messages API defaults to `high` — set `xhigh` explicitly). Best results for most coding and agentic tasks. |
 | `max` | Can deliver gains on demanding tasks but may overthink. Session-only (except via the `CLAUDE_CODE_EFFORT_LEVEL` env var). Test before adopting broadly. |
 
 Effort is calibrated per model. The same level name does not map to the same internal value across Opus 4.6 / Sonnet 4.6 / Opus 4.7. Effort matters more on 4.7 than on any prior Opus — experiment when migrating.
@@ -214,9 +216,9 @@ Opus 4.7's release positioning emphasizes strong long-context performance. The r
 
 All accessed 2026-05-20:
 
-- [Migrating to Claude Opus 4.7 — Claude API Docs](https://docs.anthropic.com/en/docs/about-claude/models/migrating-to-claude-4) — breaking changes, behavioral changes, GA / beta header status, code samples.
-- [Models overview — Claude API Docs](https://docs.anthropic.com/en/docs/about-claude/models) — model IDs, context windows, output limits, knowledge cutoff, pricing.
-- [Building with extended thinking — Claude API Docs](https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking) — adaptive thinking syntax, interleaved thinking, display defaults.
-- [Model configuration — Claude Code Docs](https://docs.claude.com/en/docs/claude-code/model-config) — effort ladder per model, `[1m]` syntax, env vars, default effort.
-- [Create custom subagents — Claude Code Docs](https://docs.claude.com/en/docs/claude-code/sub-agents) — `CLAUDE_CODE_SUBAGENT_MODEL`, subagent model resolution order, frontmatter fields.
+- [Migrating to Claude Opus 4.7 — Claude API Docs](https://platform.claude.com/docs/en/about-claude/models/migration-guide) — breaking changes, behavioral changes, GA / beta header status, code samples.
+- [Models overview — Claude API Docs](https://platform.claude.com/docs/en/about-claude/models) — model IDs, context windows, output limits, knowledge cutoff, pricing.
+- [Building with extended thinking — Claude API Docs](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) — adaptive thinking syntax, interleaved thinking, display defaults.
+- [Model configuration — Claude Code Docs](https://code.claude.com/docs/en/model-config) — effort ladder per model, `[1m]` syntax, env vars, default effort.
+- [Create custom subagents — Claude Code Docs](https://code.claude.com/docs/en/sub-agents) — `CLAUDE_CODE_SUBAGENT_MODEL`, subagent model resolution order, frontmatter fields.
 - [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) — release announcement, April 16, 2026.
