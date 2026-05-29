@@ -100,6 +100,7 @@ Each agent runs in its own context with its own prompt and tool surface; the scr
 - **Specify structure, not just length** — a JSON Schema is the strongest form of this.
 - **Demand citations.** Every factual claim an agent emits carries a resolvable URL.
 - **Allow refusal-shaped output.** "If you cannot close your lane in budget, return what you have and list what remains" — agents that bluff completeness corrupt synthesis.
+- **Isolate the deliverable with `<result>` tags.** Anthropic's deep-research harness instructs the model to enclose its final report in `<result>` tags and grades only that span, isolating the deliverable from the intermediate tool transcript. Wrapping the synthesis reduce step's final artifact (or any lane returning a long artifact) in `<result>` tags keeps it cleanly separable from working notes. ([opus-4-8-system-card.md](opus-4-8-system-card.md) §9.)
 
 ## 7. Synthesis — the primary quality gate
 
@@ -133,6 +134,8 @@ These bound any script Claude writes and must be surfaced in the chat run sheet'
 - **No mid-run user input** — for human sign-off between stages, structure as separate workflows.
 - **The script has no FS/shell access** — only spawned agents touch files or run commands.
 - **Spawned agents run `acceptEdits`** (file edits auto-approved). Combined with the 4.8 system card's prompt-injection nuance (`opus-4-8-config.md`), this makes reversibility/confirmation guardrails *more* important on write-capable workflows, not less.
+- **Subagent fork-one-directive.** System card §2.3.3 documents that dispatched subagents may exit after a single directive even when they claim to "poll in the background." Express polling or watching as a `budget`-bounded / condition-bounded loop in the script that spawns a fresh agent per iteration — never as a promise a lane keeps running on its own (see §11; [opus-4-8-system-card.md](opus-4-8-system-card.md) §3).
+- **Long-run context compaction.** Anthropic's long-running agentic harnesses trigger context compaction around 100K–200K tokens. For long pipeline stages or deep agentic lanes, validate a compaction trigger against the target workload rather than assuming the default ([opus-4-8-system-card.md](opus-4-8-system-card.md) §9).
 - **Model:** agents use the session model (`claude-opus-4-8`) unless a stage is routed elsewhere; effort default is `high` — set `xhigh` (or run `ultracode`) for coding/agentic depth.
 - **Cost:** a workflow spawns many agents, so a single run uses meaningfully more tokens than the equivalent conversation and counts toward usage and rate limits. The Standing Environment Assumption (no token-budget constraints) authorizes this; still note it for the user.
 - **Resume:** within the same session only — exiting Claude Code mid-run restarts the workflow fresh.
@@ -268,6 +271,8 @@ Write to diligence-brief-acme.md, leading with the executive summary; every clai
 | **Working machinery in the deliverable** | Lane prompts / verify findings / source-validation log appear in the written file | Partition: intermediate results stay in script variables / chat run sheet; the Phase 6B strip check enforces it. |
 | **Embedded conclusions** | Deliverable states positions rather than topics-with-evidence | Phase 2 neutrality discipline; reframe as "address X; present both sides". |
 | **Write-capable workflow with weak guardrails** | Agents run `acceptEdits`; destructive actions auto-approved | On 4.8 (prompt-injection nuance), require explicit confirmation for destructive/irreversible actions and completion-verification on writes. |
+| **Lane promises background polling** | A lane prompt says "poll continuously," "keep monitoring," or "run until the condition flips" without a workflow-level loop | §2.3.3 subagent fork-one-directive — express polling as a `budget`-/condition-bounded loop in the script; instruct one-shot lanes to "return when scope is closed or budget is spent; do not wait for further input." |
+| **Subagent caveat dropped in synthesis** | A lane reports "could not verify; best guess X" and the reduce step relays X as confirmed | §2.3.3 dropped-caveat fabrication — the reduce step preserves lane uncertainty verbatim and treats "could not verify" as a negative result, not a fact to relay (`synthesis-deliverable.md`). |
 
 ## Sources
 
@@ -278,4 +283,5 @@ Accessed **2026-05-28**:
 - [Create custom subagents — Claude Code Docs](https://code.claude.com/docs/en/sub-agents) — `agentType` dispatch, subagent definition surface, the one-level nesting constraint.
 - [Model configuration — Claude Code Docs](https://code.claude.com/docs/en/model-config) — `ultracode`, effort default `high`, `CLAUDE_CODE_SUBAGENT_MODEL`, v2.1.154.
 - Live Claude Code workflow runtime (this session) — the `meta` / `agent` / `parallel` / `pipeline` / `phase` / `budget` authoring surface, cross-checked against the public constraints above.
+- [Claude Opus 4.8 System Card](https://www.anthropic.com/claude-opus-4-8-system-card) — §2.3.3 subagent fork-one-directive and dropped-caveat fabrication (the background-polling and caveat-loss failure modes); §8 multi-agent-harness validation, `<result>`-tag deliverable isolation, and long-run context compaction. Routed through [opus-4-8-system-card.md](opus-4-8-system-card.md).
 - `SKILL.md` Meta-Rule 13 — the orchestrator invariants this reference operationalizes.
