@@ -60,6 +60,8 @@ The widget itself always fires; the user confirms or edits.
 
 **False-positive guard.** A signal phrase counts only when paired with a CLI / multi-instance / dispatch context cue (Claude Code CLI mention, `Agent` / `Task` tool reference, `CLAUDE.md`, concrete multi-instance dispatch infrastructure). Common false positives that don't count without that context: "synthesize the findings" in a single-thread research brief, "dispatch" in messaging contexts, "wave" in temporal/historical prose ("first wave of adoption"), "Agent" capitalized as a person's role ("the Agent for the deal"), "orchestration" as a metaphor ("orchestration of the team"). In doubt, downgrade the signal count.
 
+**Graded-framing sniff (lightweight).** When the draft frames the task as a scored or graded exercise — "graded," "score yourself," "evaluate against the rubric," "the test is," "what the grader expects" — note it in the Phase 0 restatement prose so Phase 3 applies anti-pattern row 30 (the Opus 4.8 system card documents elevated grader-awareness). This is not a task-type signal and does not change the Widget Call 1 default; it is only a flag for the Phase 3 sweep. It is narrow: a rubric used as legitimate success criteria is fine — only "the task itself is being graded" framing triggers the row.
+
 ## Question 2 — Deployment target
 
 | Signal in the draft | Inferred target | Default confidence |
@@ -94,8 +96,8 @@ Inferred from task type and domain, not from explicit draft language (drafts rar
 | Data analysis | Biased conclusions from narrow source coverage; missing edge cases / outliers; unsourced claims; misleading visualizations |
 | Research / search | Narrow source coverage; uncritical adoption of dominant framing; stale information; hallucinated citations |
 | Writing / content | Off-brand voice; factual drift; verbose hedging; off-target audience |
-| Agent / workflow | Misreported completion (writes to disk); destructive action on the model's judgment; over-broad scope; cascading errors across steps |
-| Orchestrated research | Workflow script does the work inline instead of fanning out; duplicate lane scope; shallow synthesis (no verify-and-converge stage); unverified numeric estimates passed between agents |
+| Agent / workflow | Misreported completion (writes to disk); premature "done" before the top-level objective is verified; destructive action on the model's judgment; over-broad scope; cascading errors across steps |
+| Orchestrated research | Workflow script does the work inline instead of fanning out; duplicate lane scope; shallow synthesis (no verify-and-converge stage); unverified numeric estimates passed between agents; subagent caveats dropped when the orchestrator relays results |
 | Creative | Generic / safe output; off-genre voice; constraint violations |
 | Multi-modal | Misread image content; wrong coordinates (4.6-era scaling); excessive image-token cost |
 | API / integration | 400 errors from deprecated parameters; schema-violation outputs; mishandled stop reasons (`refusal`, `model_context_window_exceeded`) |

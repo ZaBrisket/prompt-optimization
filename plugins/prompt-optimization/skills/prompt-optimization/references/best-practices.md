@@ -114,6 +114,14 @@ Drafts with `CRITICAL!!!`, `ALWAYS`, `NEVER` in dense clusters get worse outcome
 
 Drafts that list "use these tools: Read, Edit, Write, Bash, …" fight Opus 4.8's adaptive tool selection (4.8 triggers required tool calls more reliably than 4.7, so manual allow-lists earn even less). The skill's Meta-Rule 14 says: instruct tool use only when the task obviously requires a specific tool (current data → web search; file modification → Edit/Write); otherwise let adaptive thinking decide. If your draft has a manual allowlist, the skill will pare it back. Trust the adaptive surface.
 
+### Pitfall — telegraphing graded / scored framing
+
+If your draft says "this prompt will be graded against rubric R," "score yourself against …," or otherwise frames the task as an evaluator's job rather than the user's outcome, the skill will reframe it. The Opus 4.8 system card documents elevated grader-awareness — prompts that telegraph "this is a test" can subtly shift behavior toward gaming appearance. Reframe to the actual outcome you want and let any rubric live in the success criteria. (This is narrow: the same card found that *suppressing* eval-awareness makes the model less aligned, so the skill does not strip all evaluative language — only the "this task is being graded" framing. See `task-heuristics.md` row 30.)
+
+### Pitfall — assuming 4.8 refuses less than 4.7
+
+4.8 refusals are longer and more elaborate than 4.7, and the over-refusal rate is slightly *higher*, not lower. If your draft trimmed refusal-handling on the assumption that 4.8 is more permissive, restore it; the skill catches this in Phase 3 (row 31). For API targets where refusal length matters, the skill can add a brief "keep refusals concise" directive to the deployment guidance.
+
 ### Pitfall — assuming 4.6-era parameters still work
 
 If your draft references `temperature`, `top_p`, `top_k`, `budget_tokens`, prefilling, `output_format` (top-level), `betas=["effort-2025-11-24"]`, `betas=["interleaved-thinking-2025-05-14"]`, or `betas=["fine-grained-tool-streaming-2025-05-14"]` — those are all stale on Opus 4.8. The skill will catch them in Phase 3 anti-pattern sweep, but it helps to know they're stale so you understand the Phase 3 changes when you see them.

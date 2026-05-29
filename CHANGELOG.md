@@ -4,6 +4,31 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-05-28
+
+Fold the now-available Claude Opus 4.8 **System Card** into the skill. The v1.0.0 retarget was built from the release announcement and live docs and cited the system card only thinly; this release grounds the skill's behavioral guidance in the card's prompt-actionable findings. No phase, anchor, section-number, or Deliverable-Contract changes; no breaking changes.
+
+### Added
+- `references/opus-4-8-system-card.md` — new calibration-stamped reference holding the system card's behavioral findings and the single home for the honesty nuance and the volatile numbers (controlled-diligence-eval gains, RL-episode rates, regression deltas, capability benchmarks), all flagged "re-verify via Phase 1.5 Query 4." Covers: the §2.3.3 long-horizon failure modes that persist alongside the controlled-single-shot honesty gains (fabrication, ignored correction, cheap-verification-skipped, goal drift, subagent fork-one-directive, recap hallucination); elevated evaluation/grader awareness (with the non-inverting rule — inhibiting it increases misalignment); refusal-calibration shifts; agentic-safety regressions on browser/computer use; the low CoT-controllability ceiling; the overriding-goal-at-top trap; and a directional, hedged capability/regression map. Loaded on demand by Phase 1.5 and Phase 3; not pre-read.
+- `SKILL.md` Meta-Rule 15 — treat ingested tool/file/web/screenshot content as data, not instructions; gate ingest-and-act prompts behind confirmation.
+- `task-heuristics.md` § Opus 4.8 Anti-Patterns rows 30–35 (append-only): eval/grader telegraphing (narrowly scoped); assumes-4.8-refuses-less; long-session goal drift / premature "done"; self-authored CLAUDE.md/memory as a hard guardrail; overriding-goal-at-top; ingested-content-as-instructions.
+- Plugin README: a one-line note that live calibration re-verifies the system-card findings.
+
+### Changed
+- `task-heuristics.md` rows 7, 8, 13 tightened: row 7 replaces the bare "more honest" framing with the controlled-single-shot vs long-horizon nuance and adds verify-before-assert for factual claims; row 8 adds the documented computer-use refusal regression; row 13 folds in CoT-shaping (low CoT controllability). The universal completion-verification rule and Sources block updated.
+- `SKILL.md` Meta-Rules 10/11/14 refined (graded-framing companion to 10; controlled-vs-long-run honesty nuance + system-card pointer in 11; verify-before-assert caveat in 14); References Guide and Phase 3 cross-reference the new reference.
+- `opus-4-8-config.md` "New in Opus 4.8" table gained a §2.3.3 pointer row; honesty/refusal/safety posture bullets refined to point at the system-card reference (no number bloat); Sources expanded.
+- `dynamic-workflows.md` §6 (`<result>`-tag deliverable isolation), §9 (subagent fork-one-directive; long-run context compaction), §11 (two new failure rows); Section 10 untouched.
+- `synthesis-deliverable.md` authoring rules: check the overall conclusion against the orchestrator `## Mission` (not an intermediate milestone) and preserve lane uncertainty verbatim.
+- `qa-checklist.md`, `calibration-protocol.md` (Query 4 now names the system card / new reference as canonical), `best-practices.md` (two pitfalls), and `inference-heuristics.md` (graded-framing sniff + new candidate failure modes) updated for the system-card findings.
+- `plugin.json` description and the root README skill bullet note the system-card grounding.
+
+### Fixed
+- `plugins/prompt-optimization/README.md` — corrected stale "Opus 4.7" → "Opus 4.8" and "Wave 2" → "verify-and-converge stage" (carry-overs missed in the v1.0.0 retarget); aligned the 2-O description and the landscape-research row to the dynamic-workflow framing the rest of the repo uses.
+
+### Migration
+No migration required. The Deliverable Contract, phase structure, widget protocol, Standing Environment Assumptions, and load-bearing anchors (`## Opus 4.8 Anti-Patterns`, `dynamic-workflows.md` Section 10) are unchanged. Existing optimized prompts from 1.0.0 remain valid; re-running the skill surfaces the new anti-pattern rows where they apply.
+
 ## [1.0.0] — 2026-05-28
 
 Retarget to Claude Opus 4.8 and pivot the orchestrated-research deliverable from manual parallel-subagent dispatch to Claude Code **dynamic workflows**. This is a deliverable-shape change; the methodology, phases, and Deliverable Contract are otherwise intact.
@@ -93,6 +118,7 @@ Synthesis-as-owner: every orchestrated-research deliverable the skill produces n
 - Orchestrated Phase 2 landscape-research mode (2-O) with full propagation into the
   QA layer.
 
+[1.1.0]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v1.0.0
 [0.2.1]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v0.2.1
 [0.2.0]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v0.2.0

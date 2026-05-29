@@ -179,7 +179,8 @@ Pass requires **all** of:
 - [ ] Coverage gaps from Phase 2 identified (respecting Phase 2.5 scope decisions — excluded sub-domains are not flagged).
 - [ ] Precision deficits identified: vague verbs, implicit assumptions, ambiguous scope, undefined controversy handling.
 - [ ] Phase 1.5 calibration delta cross-referenced — new anti-patterns or deprecated behaviors from the delta are folded in.
-- [ ] Every applicable row of `task-heuristics.md §Opus 4.8 Anti-Patterns` was checked against the draft; matches were noted for Phase 4 to address and flagged for the Phase 5 delta.
+- [ ] Every applicable row of `task-heuristics.md §Opus 4.8 Anti-Patterns` was checked against the draft (rows 1–35); matches were noted for Phase 4 to address and flagged for the Phase 5 delta.
+- [ ] System-card rows applied where they fit: row 30 if the draft telegraphs graded/scored/rubric framing; row 32 if a long agentic task can declare "done" without verifying the top-level objective; row 35 (and Meta-Rule 15) if the draft ingests external/untrusted content AND has action capability.
 - [ ] Comprehensiveness deficits identified: missing in-scope sub-domains, undefined debate-handling, undefined temporal scope, unaddressed edge cases.
 
 ## Phase 4 — Produce Optimized Prompt
@@ -221,6 +222,9 @@ Pass requires **all** of:
 - [ ] The chat run sheet surfaces research-preview status and the Claude Code v2.1.154+ version gate for the dynamic-workflow runtime.
 - [ ] Lane outputs are schema-structured (each `agent` call carries a `schema` that bounds the return to the fields the synthesis reduce step consumes).
 - [ ] The source-validation log and the verify-and-converge findings pack appear in the chat run sheet only — never in the written deliverable. (Phase 6B pre-write strip check verifies this.)
+- [ ] The synthesis reduce step checks the overall conclusion against the orchestrator's `## Mission` (not an intermediate milestone) and preserves lane uncertainty verbatim (system-card §2.3.3 goal-drift and dropped-caveat mitigations; `synthesis-deliverable.md`).
+- [ ] Lane prompts carry no "poll in the background" / "keep monitoring" promises; any polling is an authored `budget`-/condition-bounded loop in the workflow script (`dynamic-workflows.md` §9, §11).
+- [ ] Verify-stage agents are framed as evidence-seekers, not as graders scoring the orchestrator (system-card §4; anti-pattern row 30).
 
 ## Phase 5 — Delta Analysis
 
