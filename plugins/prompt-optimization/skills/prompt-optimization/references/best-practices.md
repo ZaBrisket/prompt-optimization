@@ -2,7 +2,7 @@
 
 > **Calibration stamp:** This reference is user-facing guidance and skill-internal methodology, not Anthropic product facts — it does not require Phase 1.5 re-verification.
 
-This reference is user-facing — written for the person invoking the skill, not for the planner running it. It covers how to prepare a draft prompt before running prompt-optimization, the differences between the standard and orchestrated-research variants, and the most common ways drafts go off the rails before the skill even starts.
+This reference is user-facing — written for the person invoking the skill, not for the planner running it. It covers how to prepare a draft prompt before running prompt-optimization, the differences between the standard and dynamic-workflow variants, and the most common ways drafts go off the rails before the skill even starts.
 
 ## How to prepare a draft prompt before running this skill
 
@@ -38,7 +38,7 @@ The skill is high-leverage when there's a real defect in your draft prompt. Befo
 
 1. **Has this prompt actually failed for you, or is this prophylactic optimization?** If you have no concrete failure to point at, the skill's Phase 5 delta will likely return "near-optimal — minor changes" (Meta-Rule 5). That is a legitimate result, but it costs you several widget rounds to reach.
 2. **Can you name the specific defect?** ("Output is too generic," "off-target audience," "missing edge case X," "downstream session ignores constraint Y.") If you cannot, run the prompt against your real workload first to surface the defect — the skill optimizes against named failure modes more accurately than against vague dissatisfaction.
-3. **Have you already tried raising effort to `xhigh`?** Many under-thinking issues resolve at higher effort without prompt changes. Try this before invoking the skill.
+3. **Have you already tried raising effort to `xhigh`?** On Opus 4.8 the default effort is `high` on all surfaces (the 4.7-era "xhigh is the Claude Code default" is gone), so `xhigh` is now an explicit step up — set it deliberately for coding, agentic, or orchestration work. Many under-thinking issues resolve at higher effort without prompt changes. Try this before invoking the skill.
 4. **Is the deliverable a one-shot artifact you'll iterate on, or a recurring system prompt that will run hundreds of times?** The skill is highest leverage on recurring prompts (CLAUDE.md orchestrators, system prompts, productized agents) where a single optimization pays out across many runs. For one-shot prompts you'll throw away after one use, the widget rounds may cost more than the optimization is worth.
 
 Highest-leverage invocation: (4) — recurring prompt — AND (1+2) — concrete failure with a named defect. Marginal on (3) without (1).
@@ -52,9 +52,9 @@ Before any clarifying questions, the skill runs a Phase 0.5 triage that picks on
 
 You can override the track. An override to Full is always honored. An override to Express is honored only when the draft genuinely has no factual or research content that landscape research would improve — those criteria protect output quality, not interaction length, so they cannot be waived just to finish faster. If you want the Express track, the best way to get it is to bring a draft that actually fits it: mechanical, self-contained, complete spec, under ~150 words, and the Step 0C inferences come back Medium-or-better confidence across the board (a thin draft will return Low confidence on multiple questions and route to Full automatically).
 
-## Standard vs. orchestrated-research variants
+## Standard vs. dynamic-workflow variants
 
-The skill produces two shapes of deliverable depending on the Phase 1 task type. They differ in what they ask of you, what they produce, and where they run. (This is a separate axis from the Full/Express track above — track is about *how much process*; variant is about *what deliverable shape*. Orchestrated-research is always Full track.)
+The skill produces two shapes of deliverable depending on the Phase 1 task type. They differ in what they ask of you, what they produce, and where they run. (This is a separate axis from the Full/Express track above — track is about *how much process*; variant is about *what deliverable shape*. The dynamic-workflow variant is always Full track.)
 
 ### Standard variant — covers most tasks
 
@@ -66,22 +66,23 @@ The skill produces two shapes of deliverable depending on the Phase 1 task type.
 
 **Typical interaction:** Widget Call 1 (3 questions, Turn 1) → Widget Call 2 (2 questions, Turn 2) → optional Widget Call 3a or 3b in Turn 3 if conditionals apply → Phase 2.5 questions in Turn 4+ if research surfaces ambiguities → final deliverable.
 
-### Orchestrated-research variant — for multi-agent fan-out workflows
+### Dynamic-workflow variant — for multi-agent fan-out workflows
 
-**You provide:** a draft describing a research task large enough to benefit from parallel subagent dispatch — a diligence brief, a competitive landscape, a multi-perspective investigation, a multi-source aggregation.
+**You provide:** a draft describing a research task large enough to benefit from parallel workflow-agent fan-out — a diligence brief, a competitive landscape, a multi-perspective investigation, a multi-source aggregation.
 
-**The skill produces:** a `CLAUDE.md` file structured as an orchestrator: mission, scope, subagent dispatch with per-subagent scope and output shape, wave structure if applicable, synthesis, deliverable. The orchestrator file is loaded by Claude Code at session start; running the session with the file present causes the orchestrator to dispatch subagents per the file's instructions.
+**The skill produces:** a `CLAUDE.md` that orchestrates a Claude Code dynamic workflow: mission, scope, workflow plan (fan-out lanes via `parallel()` / `pipeline()`), verify-and-converge stage, synthesis, deliverable. The orchestrator file is loaded by Claude Code at session start; running the session with the file present causes the main thread to author and execute a JavaScript workflow script per the file's instructions, which the runtime dispatches.
 
-**Where it runs:** Claude Code CLI only. Subagent dispatch via the `Agent` / `Task` tool is a CLI-shaped capability. claude.ai chat doesn't support it. Cowork has different multi-agent ergonomics. The API supports it if you build your own dispatch harness, but the deliverable's `CLAUDE.md` shape is CLI-shaped.
+**Where it runs:** Claude Code (CLI / Desktop / IDE), v2.1.154+ — dynamic workflows are a research preview on all paid plans (Pro opt-in via `/config`) and on API / Bedrock / Vertex / Foundry. Where the runtime is unavailable, fall back to parallel subagents via the `Agent` / `Task` tool — the deliverable's `CLAUDE.md` shape still applies, just with subagent dispatch substituted for workflow primitives. claude.ai chat doesn't support either mode.
 
-**Typical interaction:** Widget Call 1 (3 questions including orchestrated-research as the lead task-type option when the sniff fires) → Widget Call 2 (constraints) → Widget Call 3a (orchestrated-research conditional: agent structure, remediation pass) → Phase 2 landscape research → Phase 2.5 widget questions → orchestrator `CLAUDE.md` deliverable.
+**Typical interaction:** Widget Call 1 (3 questions including the dynamic-workflow variant as the lead task-type option when the sniff fires) → Widget Call 2 (constraints) → Widget Call 3a (dynamic-workflow conditional: lane structure, verify-and-converge pass) → Phase 2 landscape research → Phase 2.5 widget questions → orchestrator `CLAUDE.md` deliverable.
 
-**What to know before choosing orchestrated-research.**
+**What to know before choosing the dynamic-workflow variant.**
 
-- Subagents cannot spawn other subagents — the dispatch graph is one level deep.
-- Opus 4.7 spawns fewer subagents by default than 4.6 — the orchestrator instruction to dispatch is explicit and load-bearing.
-- Synthesis is the primary quality gate, not a postscript. A multi-agent run with brilliant subagents and weak synthesis is worse than a single-agent run that synthesized well.
-- The orchestrator runs Opus 4.7. Subagents run `claude-opus-4-7[1m]` via `CLAUDE_CODE_SUBAGENT_MODEL` per the Standing Environment Assumption — no Sonnet/Haiku subagents.
+- The workflow script orchestrates the agents; agents don't spawn their own (nesting is one level). Caps: ≤16 concurrent agents, ≤1,000 total per run. Synthesis bandwidth means ~6 analytical lanes is a practical recommendation, not a hard cap.
+- The workflow script fans out deterministically (`parallel()` is a barrier/concurrent for independent lanes; `pipeline()` is no-barrier staged work) — there is no under-delegation to prompt around.
+- Synthesis is the primary quality gate, not a postscript. A multi-agent run with brilliant lanes and weak synthesis is worse than a single-agent run that synthesized well.
+- The orchestrator runs Opus 4.8. Workflow agents run `claude-opus-4-8[1m]` via `CLAUDE_CODE_SUBAGENT_MODEL` per the Standing Environment Assumption — no Sonnet/Haiku agents.
+- Dynamic workflows are a research preview; workflow agents run in `acceptEdits` mode (file edits auto-approved) and a run uses meaningfully more tokens than the equivalent conversation. 4.8 is also somewhat less robust to prompt injection than 4.7 and more willing to start a task without scrutinizing intent, so guardrails (allow-listed paths, explicit scope per lane, no untrusted-content lanes) matter more here.
 
 ## Common pitfalls
 
@@ -107,15 +108,15 @@ A draft written for Cowork's UI-driven knowledge-work surface will not translate
 
 ### Pitfall — aggressive emphasis in the draft
 
-Drafts with `CRITICAL!!!`, `ALWAYS`, `NEVER` in dense clusters get worse outcomes on Opus 4.7, not better. The model reads instructions literally and doesn't reward emphasis intensity — dense markers obscure the signal of the instructions that actually matter (`SKILL.md` Meta-Rule 10; `task-heuristics.md` anti-pattern row 1). If your draft has these, the skill will strip them. If your draft has them because you've tried and failed to get the model to do something, the better fix is usually to raise effort or restate the instruction concretely with positive examples.
+Drafts with `CRITICAL!!!`, `ALWAYS`, `NEVER` in dense clusters get worse outcomes on Opus 4.8, not better. The model reads instructions literally and doesn't reward emphasis intensity — dense markers obscure the signal of the instructions that actually matter (`SKILL.md` Meta-Rule 10; `task-heuristics.md` anti-pattern row 1). If your draft has these, the skill will strip them. If your draft has them because you've tried and failed to get the model to do something, the better fix is usually to raise effort or restate the instruction concretely with positive examples.
 
 ### Pitfall — over-specifying tool inventories
 
-Drafts that list "use these tools: Read, Edit, Write, Bash, …" fight Opus 4.7's adaptive tool selection. The skill's Meta-Rule 14 says: instruct tool use only when the task obviously requires a specific tool (current data → web search; file modification → Edit/Write); otherwise let adaptive thinking decide. If your draft has a manual allowlist, the skill will pare it back. Trust the adaptive surface.
+Drafts that list "use these tools: Read, Edit, Write, Bash, …" fight Opus 4.8's adaptive tool selection (4.8 triggers required tool calls more reliably than 4.7, so manual allow-lists earn even less). The skill's Meta-Rule 14 says: instruct tool use only when the task obviously requires a specific tool (current data → web search; file modification → Edit/Write); otherwise let adaptive thinking decide. If your draft has a manual allowlist, the skill will pare it back. Trust the adaptive surface.
 
 ### Pitfall — assuming 4.6-era parameters still work
 
-If your draft references `temperature`, `top_p`, `top_k`, `budget_tokens`, prefilling, `output_format` (top-level), `betas=["effort-2025-11-24"]`, `betas=["interleaved-thinking-2025-05-14"]`, or `betas=["fine-grained-tool-streaming-2025-05-14"]` — those are all stale on Opus 4.7. The skill will catch them in Phase 3 anti-pattern sweep, but it helps to know they're stale so you understand the Phase 3 changes when you see them.
+If your draft references `temperature`, `top_p`, `top_k`, `budget_tokens`, prefilling, `output_format` (top-level), `betas=["effort-2025-11-24"]`, `betas=["interleaved-thinking-2025-05-14"]`, or `betas=["fine-grained-tool-streaming-2025-05-14"]` — those are all stale on Opus 4.8. The skill will catch them in Phase 3 anti-pattern sweep, but it helps to know they're stale so you understand the Phase 3 changes when you see them.
 
 ### Pitfall — "I'll just edit the prompt myself afterward"
 
@@ -129,6 +130,6 @@ If your existing prompt is already producing the outcome you want, the skill's P
 
 - See `SKILL.md` Optimization Protocol for the full phase sequence.
 - See [task-heuristics.md](task-heuristics.md) for task-type-specific guidance once Phase 1 confirms task type.
-- See [orchestrated-research.md](orchestrated-research.md) for the full orchestrator deliverable structure.
-- See [opus-4-7-config.md](opus-4-7-config.md) for what's deprecated on Opus 4.7 (informs the "stale parameters" pitfall).
+- See [dynamic-workflows.md](dynamic-workflows.md) for the full orchestrator deliverable structure.
+- See [opus-4-8-config.md](opus-4-8-config.md) for what's deprecated on Opus 4.8 (informs the "stale parameters" pitfall).
 - See `SKILL.md` Deliverable Contract for the partition rules behind the "edit the prompt afterward" pitfall.

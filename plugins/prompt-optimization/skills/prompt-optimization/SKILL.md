@@ -1,9 +1,9 @@
 ---
 name: prompt-optimization
-description: "Transform draft prompts into production-grade instructions for Claude Opus 4.7. Triggers when a user provides a draft prompt, system message, or CLAUDE.md to improve — or asks to optimize, refine, harden, or enhance a prompt; wants to design a multi-agent research workflow, orchestrate parallel subagents in Claude Code CLI, or build a CLAUDE.md dispatching multiple research agents; mentions 'prompt engineering'; or pastes a prompt with intent to improve it. Applies Opus 4.7 best practices (adaptive thinking, xhigh effort, anti-overtriggering, completion-verification, explicit tool-use and subagent-spawn instructions, long-context verification posture) and runs mandatory live web research against Anthropic documentation to calibrate to the target deployment (API, Claude Code CLI, claude.ai, Cowork (Desktop), Managed Agents). Not for one-off content writing, code generation, or answering a prompt's own question rather than improving the prompt itself."
+description: "Transform draft prompts into production-grade instructions for Claude Opus 4.8. Triggers when a user provides a draft prompt, system message, or CLAUDE.md to improve — or asks to optimize, refine, harden, or enhance a prompt; wants to design a multi-agent research workflow, orchestrate a Claude Code dynamic workflow, or build a CLAUDE.md that fans out parallel research; mentions 'prompt engineering'; or pastes a prompt with intent to improve it. Applies Opus 4.8 best practices (adaptive thinking, effort calibration with high as the default and xhigh set explicitly for coding/agentic work, anti-overtriggering, completion-verification, explicit tool-use and dynamic-workflow orchestration, long-context verification posture) and runs mandatory live web research against Anthropic documentation to calibrate to the target deployment (API, Claude Code CLI, claude.ai, Cowork (Desktop), Managed Agents). Not for one-off content writing, code generation, or answering a prompt's own question rather than improving the prompt itself."
 ---
 
-# Prompt Optimization for Claude Opus 4.7
+# Prompt Optimization for Claude Opus 4.8
 
 Transform a draft prompt, system message, CLAUDE.md, or multi-agent orchestrator into production-grade instructions. Calibrated against live documentation on every run.
 
@@ -25,8 +25,9 @@ Every optimized prompt this skill produces assumes the downstream session runs u
 
 - **Subscription tier:** Claude Max 20x. No rate limits, no usage caps, no token-budget constraints.
 - **Context:** Full available context window. The downstream session does not need to conserve tokens or stop tasks early due to budget concerns.
-- **Model:** Claude Opus 4.7 (`claude-opus-4-7`) with adaptive thinking for the orchestrator AND for every subagent. No exceptions — including long-context synthesis (use partitioning into sub-windows under 256K instead of model swap).
-- **Subagent routing (Claude Code CLI):** `CLAUDE_CODE_SUBAGENT_MODEL=claude-opus-4-7[1m]`. Subagents inherit the same model as the orchestrator.
+- **Model:** Claude Opus 4.8 (`claude-opus-4-8`) with adaptive thinking for the orchestrator AND for every subagent. No exceptions — including long-context synthesis (use partitioning into sub-windows under 256K instead of model swap).
+- **Subagent routing (Claude Code):** `CLAUDE_CODE_SUBAGENT_MODEL=claude-opus-4-8[1m]`. Subagents and dynamic-workflow agents inherit the same model as the orchestrator unless a workflow stage is routed elsewhere.
+- **Effort:** `high` is the Opus 4.8 default on all surfaces (API and Claude Code). Set `xhigh` explicitly for coding, agentic, analytical, and orchestration work — the skill's optimized prompts are intelligence-sensitive, and on 4.8 the default no longer reaches `xhigh` on its own.
 - **Tool selection:** Adaptive thinking decides which tools to invoke. Do not pre-specify a manual tool allowlist in optimized prompts. Where a task obviously requires a specific tool (research needing current data → web search; document extraction → file tools), instruct that tool's use directly. For ambiguous cases, leave it to the model's adaptive judgment.
 
 When references in this skill recommend Sonnet/Haiku routing, Opus 4.6 fallbacks for long context, or cost-driven partitioning, treat those recommendations as superseded by this section. The standing environment is non-negotiable absent an explicit user override during Phase 1.
@@ -35,21 +36,21 @@ When references in this skill recommend Sonnet/Haiku routing, Opus 4.6 fallbacks
 
 Load these on demand — do not pre-read all references. Each phase of the protocol points to the references it needs.
 
-- **[references/opus-4-7-config.md](references/opus-4-7-config.md)** — Opus 4.7 critical behaviors, API parameters, effort levels, adaptive thinking, structured outputs, context window options, long-context verification posture.
+- **[references/opus-4-8-config.md](references/opus-4-8-config.md)** — Opus 4.8 critical behaviors (what carries forward from 4.7, what's new in 4.8), API parameters, effort levels (default `high`), adaptive thinking, mid-conversation system messages, fast mode, structured outputs, context window options, long-context verification posture.
 - **[references/calibration-protocol.md](references/calibration-protocol.md)** — Phase 1.5 query set, source trust hierarchy, delta format, integration rules, fallback chain.
 - **[references/platform-baseline.md](references/platform-baseline.md)** — Capability matrix across API, CLI, Cowork, claude.ai; subscription tiers; platform assignment guidance.
 - **[references/inference-heuristics.md](references/inference-heuristics.md)** — Phase 0 Step 0C signal-to-inference lookup; orchestrated-research sniff rules; confidence calibration.
-- **[references/landscape-research.md](references/landscape-research.md)** — Phase 2 operational manual: single-threaded vs orchestrated-fan-out execution modes, 2A draft deconstruction, 2B query taxonomy and source-type diversity, 2B' adversarial pass, 2C synthesis, 2D/2D' verification gates.
-- **[references/task-heuristics.md](references/task-heuristics.md)** — Per-task-type guidance (code, data, research, writing, agent, orchestrated, creative, multi-modal, API, multi-model, knowledge work) plus the Opus 4.7 anti-patterns table.
-- **[references/orchestrated-research.md](references/orchestrated-research.md)** — Complete multi-agent guide: decomposition, subagent construction, dependency management, synthesis, failure modes.
-- **[references/synthesis-deliverable.md](references/synthesis-deliverable.md)** — Orchestrated-research deliverable contract: executive-summary template (key findings → primary URLs → per-finding conclusions → overall conclusion), source-validation revisit protocol on load-bearing sources, always-on devil's-advocate / confirmatory dispatch brief, verdict-ladder discipline. Loaded by Phase 4 alongside `orchestrated-research.md` Section 10 when task type is `orchestrated-research`.
+- **[references/landscape-research.md](references/landscape-research.md)** — Phase 2 operational manual: single-threaded vs dynamic-workflow / orchestrated-fan-out execution modes, 2A draft deconstruction, 2B query taxonomy and source-type diversity, 2B' adversarial pass, 2C synthesis, 2D/2D' verification gates.
+- **[references/task-heuristics.md](references/task-heuristics.md)** — Per-task-type guidance (code, data, research, writing, agent, orchestrated, creative, multi-modal, API, multi-model, knowledge work) plus the Opus 4.8 anti-patterns table.
+- **[references/dynamic-workflows.md](references/dynamic-workflows.md)** — Complete dynamic-workflow guide: when workflows apply, the authoring API, decomposition→primitives, the verify-and-converge stage, synthesis, the deliverable CLAUDE.md template (Section 10), failure modes.
+- **[references/synthesis-deliverable.md](references/synthesis-deliverable.md)** — Orchestrated-research deliverable contract: executive-summary template (key findings → primary URLs → per-finding conclusions → overall conclusion), source-validation revisit protocol on load-bearing sources, the always-on verify-and-converge (adversarial / confirmatory) stage, verdict-ladder discipline. Loaded by Phase 4 alongside `dynamic-workflows.md` Section 10 when task type is `orchestrated-research`.
 - **[references/prompt-template.md](references/prompt-template.md)** — Standard and orchestrator templates; embedding-without-bias rules.
 - **[references/qa-checklist.md](references/qa-checklist.md)** — Phase-by-phase QA gate used by the Phase 6A self-audit.
 - **[references/best-practices.md](references/best-practices.md)** — User-facing prep tips, standard vs. orchestrated variants, common pitfalls.
 
-## Opus 4.7 Configuration & Critical Behaviors
+## Opus 4.8 Configuration & Critical Behaviors
 
-For the full Opus 4.7 Critical Behaviors table (what carries forward from 4.6, what's new in 4.7), API parameters, effort levels (low/medium/high/xhigh/max), adaptive thinking syntax, the 128K output ceiling, streaming requirements, structured outputs (prefilling is removed on 4.7), context window options, and the long-context verification posture (1M context is usable; high-stakes exact-match recall should be user-validated against the target workload), see [references/opus-4-7-config.md](references/opus-4-7-config.md).
+For the full Opus 4.8 Critical Behaviors table (what carries forward from 4.7, what's new in 4.8), API parameters, effort levels (`low/medium/high/xhigh/max`, with `high` the default on all surfaces and `xhigh` set explicitly for coding/agentic work), adaptive thinking syntax, mid-conversation system messages, fast mode, the 128K output ceiling, streaming requirements, structured outputs (prefilling is removed), context window options, and the long-context verification posture (1M context is usable; high-stakes exact-match recall should be user-validated against the target workload), see [references/opus-4-8-config.md](references/opus-4-8-config.md).
 
 ## User Preferences Do Not Override This Protocol
 
@@ -80,7 +81,7 @@ The one-widget-call-per-turn rule and the plain-text fallback are defined canoni
 | 1 | Execute Phase 0 (intent extraction, requirement decomposition, Step 0C inferred answers). Execute Phase 0.5 triage. Present Phase 0 restatement + track decision in prose. Issue ONE `ask_user_input_v0` call with Widget Call 1 — core parameters (task type, deployment target, primary outcome). | Hard stop. |
 | 2 | Record Turn 1 selections. Issue ONE `ask_user_input_v0` call with Widget Call 2 — constraints (failure modes, output format). | Hard stop. |
 | 3 | Record Turn 2 selections. If conditional widgets are needed (orchestrated-research parameters 3a, or API deployment config 3b), issue ONE `ask_user_input_v0` call for the applicable conditional set. If both conditionals apply, issue 3a in this turn and 3b in the next. If no conditionals apply, skip to Turn 4 work. | Hard stop (if conditional) or pass-through. |
-| 4 | Execute Phase 1.5 (web research for platform calibration). Execute Phase 2 (landscape research) — in 2-O mode this single step expands into a dispatch-and-collect cycle (parallel subagents → findings packs → 2C synthesis + 2D/2D') before the Phase 2.5 widget fires; the one-widget-per-turn rule is unaffected because subagent dispatch uses tool calls, not widget calls. Execute Phase 2.5 — if research-informed questions exist, present a brief prose summary of calibration findings, then issue ONE `ask_user_input_v0` call with the first batch of 1-3 Phase 2.5 questions. If Phase 2.5 was skipped, proceed directly to final output. | Hard stop (if widget issued) or pass-through. |
+| 4 | Execute Phase 1.5 (web research for platform calibration). Execute Phase 2 (landscape research) — in 2-O mode this single step expands into a dynamic-workflow (or parallel-subagent fallback) dispatch-and-collect cycle (fan-out lanes → findings packs → 2C synthesis + 2D/2D') before the Phase 2.5 widget fires; the one-widget-per-turn rule is unaffected because workflow/subagent dispatch uses tool calls, not widget calls. Execute Phase 2.5 — if research-informed questions exist, present a brief prose summary of calibration findings, then issue ONE `ask_user_input_v0` call with the first batch of 1-3 Phase 2.5 questions. If Phase 2.5 was skipped, proceed directly to final output. | Hard stop (if widget issued) or pass-through. |
 | 5+ | Phase 2.5 continuation (if needed) — ONE widget call per turn with the next batch until all Phase 2.5 questions are answered. | Hard stop per widget. |
 | Final | Execute Phase 3 (draft analysis). Execute Phase 4 (produce optimized prompt). Execute Phase 5 (delta analysis). Execute Phase 6 (final QC pass + file write). Deliver the complete optimized prompt, delta analysis, and QC summary. | Done. |
 
@@ -101,7 +102,7 @@ In environments where no user is reachable (subagent runs, scheduled tasks, CLI 
 - **Phase 0 / 0.5:** treat Step 0C inferred answers as accepted (no widget confirmation); record their Signals + Confidence stamps as the working selections.
 - **Phase 1 / 2.5:** collapse all widget gates; use the inferred values directly.
 - **Phase 1.5:** still mandatory; surface findings in the chat run sheet equivalent (whatever the parent context receives as the subagent's output).
-- **Phase 2 mode:** 2-O requires the Agent/Task tool, so a headless/toolless run that lacks it uses 2-S by definition (see Phase 2 § execution modes). A non-interactive run that *does* have the Agent tool may still fan out into 2-O.
+- **Phase 2 mode:** 2-O requires the Claude Code dynamic-workflow runtime (or the Agent/Task tool as a fallback), so a headless/toolless run that lacks both uses 2-S by definition (see Phase 2 § execution modes). A non-interactive run that *does* have the workflow runtime (`claude -p` supports it) or the Agent tool may still fan out into 2-O.
 - **Phase 5 delta:** explicitly list which answers were assumed and their Confidence stamps, so the user sees what was inferred without their input.
 - **Phase 6A QC:** mark the run as non-interactive in the audit; the PASS/FAIL gates still apply.
 
@@ -113,7 +114,7 @@ Do not rely on any hardcoded year or month inside this skill file or its referen
 
 ### Model-Version Runtime Substitution
 
-Where this skill names `Opus 4.7`, `claude-opus-4-7`, or any specific model identifier, those names are templated against the calibration-stamp date at the top of each reference file. **The substitution rule fires only when Phase 1.5 surfaces a confirmed flagship change via the broadened Query 4** (see `references/calibration-protocol.md`). In the absence of such a confirmed finding, use the model identifiers named in this skill verbatim — do not substitute speculatively, do not pre-emptively swap based on prior knowledge, do not guess at a newer flagship. When Phase 1.5 does confirm a newer flagship, use that newer ID for the optimized prompt's deployment configuration and re-run Query 4 against the new model card; do not preserve a retired model ID in the chat run sheet's `<deployment_config>` block.
+Where this skill names `Opus 4.8`, `claude-opus-4-8`, or any specific model identifier, those names are templated against the calibration-stamp date at the top of each reference file. **The substitution rule fires only when Phase 1.5 surfaces a confirmed flagship change via the broadened Query 4** (see `references/calibration-protocol.md`). In the absence of such a confirmed finding, use the model identifiers named in this skill verbatim — do not substitute speculatively, do not pre-emptively swap based on prior knowledge, do not guess at a newer flagship. When Phase 1.5 does confirm a newer flagship, use that newer ID for the optimized prompt's deployment configuration and re-run Query 4 against the new model card; do not preserve a retired model ID in the chat run sheet's `<deployment_config>` block.
 
 ### Widget Interaction Protocol
 
@@ -208,7 +209,7 @@ INFERRED ANSWERS:
 
 For a worked example showing INFERRED ANSWERS populated for a representative draft, see [references/inference-heuristics.md § Worked example](references/inference-heuristics.md#worked-example).
 
-**Orchestrated-research sniff.** During Step 0C, inspect the draft for orchestrator signals ("parallel agents," "subagents," "dispatch," "synthesize," "wave 1," "fan out," Agent tool references, agent-count mentions, CLAUDE.md combined with dispatch language). When signals warrant, set the Phase 1 Widget Call 1 task-type default to `orchestrated-research` so it pre-selects in the widget. The widget itself remains — the user confirms or edits before Phase 2. Do not unilaterally decide task type or skip Phase 1.
+**Orchestrated-research sniff.** During Step 0C, inspect the draft for orchestrator signals ("parallel agents," "subagents," "dispatch," "synthesize," "wave 1," "fan out," "workflow," "dynamic workflow," "ultracode," "/deep-research," `.claude/workflows`, Agent tool references, agent-count mentions, codebase-wide migration/audit at scale, CLAUDE.md combined with dispatch language). When signals warrant, set the Phase 1 Widget Call 1 task-type default to `orchestrated-research` so it pre-selects in the widget. The widget itself remains — the user confirms or edits before Phase 2. Do not unilaterally decide task type or skip Phase 1.
 
 **For the full signal-to-inference lookup table and confidence calibration rules, see [references/inference-heuristics.md](references/inference-heuristics.md).**
 
@@ -253,7 +254,7 @@ The phase below describes the **Full track** Widget Call sequence. On the **Expr
 
 **Widget Call 1 — Core Parameters (Turn 1)** (3 questions, single_select):
 
-1. **Task type**: Lead with the inferred type from Step 0C. Include orchestrated-research as an explicit option when signals are present. Example options: `["Orchestrated research (multi-agent CLI)", "Code generation", "Analysis / research", "Other (I'll specify)"]` — exact ordering reflects the Step 0C inference.
+1. **Task type**: Lead with the inferred type from Step 0C. Include orchestrated-research as an explicit option when signals are present. Example options: `["Orchestrated research (dynamic workflow, Claude Code)", "Code generation", "Analysis / research", "Other (I'll specify)"]` — exact ordering reflects the Step 0C inference.
 2. **Deployment target**: Lead with the inferred platform. Example options: `["Claude API", "Claude Code CLI", "Cowork (Desktop)", "claude.ai (chat)", "Other (I'll specify)"]`. Cowork (Desktop) is a first-class GA deployment target on all paid plans.
 3. **Primary outcome**: Present Claude's inferred CORE OBJECTIVE as Option 1 (a short restatement), one alternative interpretation as Option 2, and "Other (I'll specify)" as Option 3. If CONFIRMATION NEEDED = Yes from Phase 0, this becomes Question 1 instead of Question 3.
 
@@ -266,15 +267,15 @@ The phase below describes the **Full track** Widget Call sequence. On the **Expr
 
 **→ HARD STOP after Widget Call 2.**
 
-**Widget Call 3a — Conditional: Orchestrated Research (Turn 3, if applicable)** (only if Widget Call 1 task type = orchestrated-research):
+**Widget Call 3a — Conditional: Orchestrated Research / Dynamic Workflow (Turn 3, if applicable)** (only if Widget Call 1 task type = orchestrated-research):
 
-6. **Agent structure** (single_select): `["Fully parallel (all independent)", "Wave-based (some dependencies)", "Hybrid (shared constants + parallel)", "Other (I'll specify)"]`
-7. **Remediation pass** (single_select): `["Yes — first pass, expect corrections", "No — targeted follow-up", "Other (I'll specify)"]`
+6. **Workflow shape** (single_select): `["Parallel fan-out (independent lanes)", "Pipeline (staged / some dependencies)", "Hybrid (shared constants → fan-out)", "Other (I'll specify)"]`
+7. **Verify-and-converge depth** (single_select): `["Adversarial verify stage (thesis-advancing)", "Confirmatory audit (descriptive inventory)", "Other (I'll specify)"]`
 
 **Widget Call 3b — Conditional: API Deployment (Turn 3 or Turn 4, if applicable)** (only if Widget Call 1 deployment target = API):
 
-8. **Thinking mode & effort** (single_select): `["Adaptive thinking — high effort", "Adaptive thinking — xhigh effort", "Adaptive thinking — max effort", "Other (I'll specify)"]`
-9. **Context scale** (single_select): `["Standard 200K", "1M context (GA)", "Other (I'll specify)"]`
+8. **Thinking mode & effort** (single_select): `["Adaptive thinking — xhigh effort (recommended for coding/agentic)", "Adaptive thinking — high effort (4.8 default)", "Adaptive thinking — max effort", "Other (I'll specify)"]`
+9. **Context scale** (single_select): `["Standard 200K", "1M context (default on 4.8)", "Other (I'll specify)"]`
 
 When both 3a and 3b apply, issue 3a first, then 3b in the following turn. Never combine conditional widgets.
 
@@ -288,7 +289,7 @@ If selections reveal a contradiction (e.g., task type = orchestrated-research bu
 
 ### Phase 1.5: Platform & Best Practices Calibration (Mandatory — Every Run)
 
-**Purpose:** Ensure the optimized prompt reflects current prompt engineering best practices and platform-specific capabilities. The Opus 4.7 behavioral baseline in this skill is a starting point — Anthropic ships model updates, new API features, and revised documentation on a rolling basis. This phase catches what has changed since the skill was last edited.
+**Purpose:** Ensure the optimized prompt reflects current prompt engineering best practices and platform-specific capabilities. The Opus 4.8 behavioral baseline in this skill is a starting point — Anthropic ships model updates, new API features, and revised documentation on a rolling basis. This phase catches what has changed since the skill was last edited.
 
 For the full calibration query set, source trust hierarchy, delta format, integration rules, confidence levels, and fallback chain, see [references/calibration-protocol.md](references/calibration-protocol.md).
 
@@ -298,10 +299,10 @@ For the full calibration query set, source trust hierarchy, delta format, integr
 
 | # | Query template | Purpose |
 |---|---|---|
-| 1 | `Claude Opus 4.7 [deployment target] best practices [current year]` | Platform-specific recent guidance |
+| 1 | `Claude Opus 4.8 [deployment target] best practices [current year]` | Platform-specific recent guidance |
 | 2 | `Anthropic prompt engineering [task type] [feature mentioned in draft]` | Task-type-specific guidance |
-| 3 | `Claude Opus 4.7 [deployment target] configuration` | Deployment-target API/setup specifics |
-| 4 | `Anthropic Claude model card Opus 4.7` | Model-card capabilities/limitations |
+| 3 | `Claude Opus 4.8 [deployment target] configuration` | Deployment-target API/setup specifics |
+| 4 | `Anthropic Claude model card Opus 4.8` | Model-card capabilities/limitations |
 
 **Query 5 (conditional)** — Fire if any of: (a) draft references a feature not surfaced by Queries 1–4 (MCP, Files API, Batch API, custom tools, prompt caching, Skills, Cowork, Managed Agents); (b) baseline appears stale (>30 days since last calibration evidence); (c) Queries 1–4 surface a model retirement notice or deprecation. Query 5 form: `Anthropic [specific feature] [deployment target] [current year]`.
 
@@ -320,9 +321,9 @@ For the full calibration query set, source trust hierarchy, delta format, integr
 **Execution mode — single-threaded or orchestrated.** Phase 2 runs in one of two modes. Both execute the same logical steps (2A → 2B → 2B' → 2C → 2D → 2D'), honor the same topic-not-position discipline, and produce the same 2C synthesis artifact and 2D/2D' gate results — they differ only in *who* runs the searches and *how much depth* the corpus reaches:
 
 - **Phase 2-S (single-threaded)** — the orchestrator runs every step itself under the 12-search hard cap. This is the default and the only mode available when the Agent/Task tool is absent (claude.ai chat, API without a dispatch harness).
-- **Phase 2-O (orchestrated fan-out)** — the orchestrator runs 2A itself, then dispatches parallel landscape subagents (one per sub-domain or query-taxonomy lane, plus a dedicated adversarial-pass subagent), each searching deeply within its own 1M-context lane, then collects their findings packs and runs 2C → 2D/2D' on the aggregate corpus. Depth comes from parallel lanes and at most one remediation pass — not from unbounded recursion.
+- **Phase 2-O (orchestrated fan-out)** — the orchestrator runs 2A itself, then dispatches a **dynamic workflow** that fans out parallel landscape lanes (one per sub-domain or query-taxonomy lane, plus a dedicated adversarial-pass lane), each searching deeply within its own isolated context, then collects their findings packs and runs 2C → 2D/2D' on the aggregate corpus. When the dynamic-workflow runtime is unavailable, fall back to parallel landscape subagents via the Agent/Task tool. Depth comes from parallel lanes and at most one remediation pass — not from unbounded recursion.
 
-Select 2-O when ALL hold: (1) the Agent/Task tool is available in the current session; (2) the draft is genuinely multi-sub-domain, multi-stakeholder, or contested — the same depth signals that put a draft on the Full track. Otherwise run 2-S. The choice is made on these objective criteria, not planner discretion, and is reported (mode + one-line rationale) in the chat run sheet and the Phase 5 delta. A user override to 2-S is always honored; an override to 2-O is honored only when the Agent/Task tool is actually available. Both modes inherit the Standing Environment Assumptions (every subagent on `claude-opus-4-7[1m]` with adaptive thinking); subagents cannot spawn subagents; the neutrality discipline and the Deliverable Contract partition apply identically — in 2-O they are carried into every subagent brief and re-checked across the aggregate corpus at 2D/2D'.
+Select 2-O when ALL hold: (1) the dynamic-workflow runtime (Claude Code v2.1.154+) or the Agent/Task tool is available in the current session; (2) the draft is genuinely multi-sub-domain, multi-stakeholder, or contested — the same depth signals that put a draft on the Full track. Otherwise run 2-S. The choice is made on these objective criteria, not planner discretion, and is reported (mode + one-line rationale) in the chat run sheet and the Phase 5 delta. A user override to 2-S is always honored; an override to 2-O is honored only when the workflow runtime or Agent/Task tool is actually available. Both modes inherit the Standing Environment Assumptions (every lane/subagent on `claude-opus-4-8[1m]` with adaptive thinking); workflow agents do not spawn their own agents (the script orchestrates; nesting is one level); the neutrality discipline and the Deliverable Contract partition apply identically — in 2-O they are carried into every lane brief and re-checked across the aggregate corpus at 2D/2D'.
 
 **Operational detail lives in [references/landscape-research.md](references/landscape-research.md).** Load that file when Phase 2 runs. It carries the single-threaded vs orchestrated execution-mode procedure, the Step 2A draft deconstruction, the Step 2B query taxonomy and source-type diversity requirements, the Step 2B' adversarial pass, the Step 2C synthesis artifact, and the 2D / 2D' verification gates. The phase contract to hold in mind:
 
@@ -375,9 +376,9 @@ Identify issues in these categories. Cross-reference against [references/task-he
 
 **Precision deficits:** Vague verbs ("help with" → "generate", "analyze", "extract"), implicit assumptions, ambiguous scope, undefined handling of controversies. Incorporate Phase 2.5 new constraints.
 
-**Opus 4.7 anti-patterns.** Cross-reference the Phase 1.5 Current Practices Delta before applying this check. If calibration identified new anti-patterns or deprecated behaviors, fold them in. If calibration confirmed baseline is current, proceed as-is.
+**Opus 4.8 anti-patterns.** Cross-reference the Phase 1.5 Current Practices Delta before applying this check. If calibration identified new anti-patterns or deprecated behaviors, fold them in. If calibration confirmed baseline is current, proceed as-is.
 
-For the full Opus 4.7 anti-pattern table — emphasis discipline, deprecated parameters (`budget_tokens`, `output_format`, prefilling), guardrail gaps, orchestrator under-delegation, tool-use defaults — see [references/task-heuristics.md §Opus 4.7 Anti-Patterns](references/task-heuristics.md#opus-47-anti-patterns). Apply every row that matches the draft; flag in Phase 5 delta which rows triggered fixes.
+For the full Opus 4.8 anti-pattern table — emphasis discipline, deprecated parameters (`budget_tokens`, `output_format`, prefilling), guardrail gaps, dynamic-workflow orchestration gaps, tool-use defaults — see [references/task-heuristics.md §Opus 4.8 Anti-Patterns](references/task-heuristics.md#opus-48-anti-patterns). Apply every row that matches the draft; flag in Phase 5 delta which rows triggered fixes.
 
 **Comprehensiveness deficits (from Phase 2, as refined by Phase 2.5):** Missing sub-domains that remain in scope after user clarification, no debate-handling instructions for controversies confirmed relevant, undefined temporal scope, unaddressed edge cases.
 
@@ -395,7 +396,7 @@ If any prerequisite phase was not executed, return to the earliest incomplete ph
 
 The optimized prompt must be: (1) RUNNABLE — no unresolved placeholders, (2) COMPREHENSIVE — all landscape findings as areas to cover, (3) NEUTRAL — zero pre-judged conclusions.
 
-**Template selection.** Read [references/prompt-template.md](references/prompt-template.md) for the full standard template and orchestrator template. Select the appropriate template based on the Phase 1 task type. For orchestrated-research, the deliverable is a CLAUDE.md file structured per [references/orchestrated-research.md](references/orchestrated-research.md) Section 10, and load [references/synthesis-deliverable.md](references/synthesis-deliverable.md) alongside it for the executive-summary template, source-validation revisit protocol, and always-on devil's-advocate dispatch brief.
+**Template selection.** Read [references/prompt-template.md](references/prompt-template.md) for the full standard template and orchestrator template. Select the appropriate template based on the Phase 1 task type. For orchestrated-research, the deliverable is a CLAUDE.md file that orchestrates a dynamic workflow, structured per [references/dynamic-workflows.md](references/dynamic-workflows.md) Section 10, and load [references/synthesis-deliverable.md](references/synthesis-deliverable.md) alongside it for the executive-summary template, source-validation revisit protocol, and the always-on verify-and-converge stage.
 
 **Partition enforcement at template application.** When the template includes `<environment>` or `<deployment_config>` blocks, those blocks are rendered into the chat run sheet only — never into the prompt body that becomes the file. The prompt body and the file body are identical; both exclude environment and deployment metadata. This applies to every task type, including CLAUDE.md.
 
@@ -434,7 +435,7 @@ Re-run through the skill phases as a verification sweep. For each phase, confirm
 
 **If gaps are found, classify and act:**
 
-- **Material gap** — missing Phase 1.5/2 research finding from the output, ignored Phase 1 or 2.5 widget selection, stale 4.6-era pattern present, missing required template section, missing deployment configuration block from the chat run sheet on an API-targeted prompt (the deployment config does not go in the file — verify it is present in the chat run sheet only), missing completion-verification on a file-writing agentic prompt, any Opus 4.7 anti-pattern from `task-heuristics.md` left unaddressed, OR any environment/deployment/QC content that has leaked into the written file body. Fix and document the change in the QC summary.
+- **Material gap** — missing Phase 1.5/2 research finding from the output, ignored Phase 1 or 2.5 widget selection, stale pre-4.8 pattern present, missing required template section, missing deployment configuration block from the chat run sheet on an API-targeted prompt (the deployment config does not go in the file — verify it is present in the chat run sheet only), missing completion-verification on a file-writing agentic prompt, any Opus 4.8 anti-pattern from `task-heuristics.md` left unaddressed, OR any environment/deployment/QC content that has leaked into the written file body. Fix and document the change in the QC summary.
 - **Minor gap** — stylistic inconsistency, capitalization nit, redundant phrasing, formatting variance, comment polish. Fix silently.
 
 If unsure which tier a gap belongs to, treat as material — the asymmetry of cost favors documentation.
@@ -455,8 +456,8 @@ After the QC pass, write the finalized optimized prompt to an output path. Use t
 - Frontmatter comments documenting the run (audit date, calibration date, generation metadata)
 - Preamble like "Here is the optimized prompt:" or postamble like "Saved to:" inside the file body
 - Any "Generated by prompt-optimization skill" attribution
-- Phase 2 internal working artifacts: the 2A Topic Identification & Draft Deconstruction block, the 2B Landscape Research Execution Log, the 2C Landscape Synthesis output, the 2D' Coverage-Bias Check, the 2-O subagent briefs / dispatch graph / per-lane findings packs, or any other Phase 2 analytical scaffolding
-- Orchestrated-research deliverable working artifacts (task type `orchestrated-research` only): the source-validation log (per-source `verified` / `partially verified` / `not verified` / `unreachable` verdicts with verbatim attribution comparisons), the devil's-advocate findings pack (adversarial-mode per-finding verdicts and adversarial-evidence URLs, or confirmatory-mode entry audit and missed-entries block), the synthesis-agent's working drafts of key findings prior to source-validation revisit, and any per-source verbatim quotes captured during validation
+- Phase 2 internal working artifacts: the 2A Topic Identification & Draft Deconstruction block, the 2B Landscape Research Execution Log, the 2C Landscape Synthesis output, the 2D' Coverage-Bias Check, the 2-O dynamic-workflow orchestration spec / lane prompts / per-lane findings packs, or any other Phase 2 analytical scaffolding
+- Orchestrated-research deliverable working artifacts (task type `orchestrated-research` only): the dynamic-workflow orchestration spec and lane prompts, the source-validation log (per-source `verified` / `partially verified` / `not verified` / `unreachable` verdicts with verbatim attribution comparisons), the verify-and-converge findings pack (adversarial-mode per-finding verdicts and adversarial-evidence URLs, or confirmatory-mode entry audit and missed-entries block), the synthesis reduce step's working drafts of key findings prior to source-validation revisit, and any per-source verbatim quotes captured during validation
 
 If any of the above are present in the proposed file content, strip them before writing. The file body must match exactly the prompt body that appears in the chat output's prompt block — same content, no additions, no metadata.
 
@@ -466,11 +467,11 @@ If any of the above are present in the proposed file content, strip them before 
 
 ## Task-Type Heuristics
 
-Apply enhancements based on task type. See [references/task-heuristics.md](references/task-heuristics.md) for detailed Opus 4.7 guidance on code generation, data analysis, research/search, writing/content, agent/workflow, orchestrated multi-agent research, creative, multi-modal, API/integration, and knowledge work (Cowork-primary).
+Apply enhancements based on task type. See [references/task-heuristics.md](references/task-heuristics.md) for detailed Opus 4.8 guidance on code generation, data analysis, research/search, writing/content, agent/workflow, orchestrated multi-agent research, creative, multi-modal, API/integration, and knowledge work (Cowork-primary).
 
-## Orchestrated Multi-Agent Research
+## Orchestrated Research via Dynamic Workflows
 
-For prompts targeting Claude Code CLI with parallel subagent execution (task type `orchestrated-research`), see [references/orchestrated-research.md](references/orchestrated-research.md) for the complete operational guide: subagent prompt construction, context isolation, dependency management (parallel/sequential/shared constants), output scope calibration, synthesis design, the remediation pattern, environment configuration, the orchestrator prompt template, and the failure mode catalog. See Meta-Rule 13 below for the Opus 4.7 dispatch requirement.
+For prompts targeting Claude Code with dynamic-workflow orchestration (task type `orchestrated-research`), see [references/dynamic-workflows.md](references/dynamic-workflows.md) for the complete operational guide: the authoring API, decomposition→workflow-primitive mapping, context isolation, the verify-and-converge stage, synthesis design, the caps/cost/safety envelope, the deliverable CLAUDE.md template (Section 10), and the failure mode catalog. See Meta-Rule 13 below for the Opus 4.8 orchestration requirement.
 
 ## Meta-Rules
 
@@ -480,14 +481,14 @@ For prompts targeting Claude Code CLI with parallel subagent execution (task typ
 4. **Preserve user's domain terminology exactly.**
 5. **If draft is already near-optimal, say so** — don't over-engineer.
 6. **For JSON output:** use `output_config.format` with JSON schema; specify "output ONLY valid JSON with no preamble" as fallback.
-7. **For reasoning tasks:** specify effort level (low/medium/high/xhigh/max). If adaptive thinking is enabled, Claude decides when to reason deeply. Avoid "think" in prompts where thinking is NOT enabled.
+7. **For reasoning tasks:** specify effort level (low/medium/high/xhigh/max). On Opus 4.8 the default is `high`; set `xhigh` explicitly for coding/agentic work. If adaptive thinking is enabled, Claude decides when to reason deeply. Avoid "think" in prompts where thinking is NOT enabled.
 8. **Distinguish comprehensiveness from bias:** "Cover topics A, B, C" is comprehensive; "conclude that A > B" is biased.
 9. **When in doubt, make the prompt ask.** Instruct the executor to investigate and decide rather than embedding your judgment.
-10. **Strip aggressive prompting language.** Neutral imperatives outperform emphasis markers on Opus 4.7.
-11. **Include guardrails for code and agentic prompts.** Over-engineering guardrails for code; reversibility guardrails for agentic deployments; completion-verification for anything writing to disk (4.7 occasionally misreports completion).
-12. **Specify deployment configuration** for any API-targeted prompt — surface it in the chat run sheet alongside the prompt artifact, not inside the prompt body and not in the written file. Cover: thinking mode, effort, context window, compaction, output ceiling, streaming.
-13. **For orchestrated research:** Read [`references/orchestrated-research.md`](references/orchestrated-research.md) and [`references/synthesis-deliverable.md`](references/synthesis-deliverable.md) before constructing multi-agent prompts. Four invariants the orchestrator prompt must enforce — (1) explicit subagent dispatch instruction (4.7 under-delegates by default); (2) never embed unverified numerical estimates in subagent prompts (use shared-constants pattern or instruct independent verification); (3) the synthesis agent owns the deliverable's evidentiary chain — every claim in the deliverable body cites a URL, and the deliverable leads with an executive summary tying each key finding to a primary source URL with a source-validation verdict; (4) the synthesis agent runs the load-bearing source-validation revisit pass and dispatches a `devils-advocate` worker (adversarial mode for thesis-advancing deliverables, confirmatory mode for purely descriptive ones) before finalizing the executive summary, integrating verdicts under the verdict-ladder discipline that prevents verdict-mush.
-14. **Instruct tool use when the task obviously requires a specific tool** (e.g., research that requires current data → web search; document extraction → file tools; agentic file modification → Edit/Write). For ambiguous cases, let Opus 4.7's adaptive thinking decide which tools to invoke. The goal is task-driven tool instruction, not a manual allowlist. Do not embed pre-specified tool inventories in the optimized prompt.
+10. **Strip aggressive prompting language.** Neutral imperatives outperform emphasis markers on Opus 4.8.
+11. **Include guardrails for code and agentic prompts.** Over-engineering guardrails for code; reversibility guardrails for agentic deployments; completion-verification for anything writing to disk (defense-in-depth — 4.8 is materially more honest about its own work than 4.7, but verification remains prudent). For dynamic-workflow deliverables, keep reversibility/confirmation guardrails strong: workflow-spawned agents run in `acceptEdits` mode and the 4.8 system card notes reduced prompt-injection robustness.
+12. **Specify deployment configuration** for any API-targeted prompt — surface it in the chat run sheet alongside the prompt artifact, not inside the prompt body and not in the written file. Cover: model ID, thinking mode, effort (default `high`; `xhigh` for coding/agentic), context window, compaction, output ceiling, streaming, and any 4.8-specific options the draft warrants (mid-conversation system messages, fast mode).
+13. **For orchestrated research:** Read [`references/dynamic-workflows.md`](references/dynamic-workflows.md) and [`references/synthesis-deliverable.md`](references/synthesis-deliverable.md) before constructing the deliverable. The deliverable is a CLAUDE.md that orchestrates a Claude Code dynamic workflow (Section 10). Four invariants it must enforce — (1) the workflow **script** fans the work out (`parallel` for independent lanes, `pipeline` for staged work) — the script dispatches deterministically, so there is no under-delegation to prompt around; (2) never embed unverified numerical estimates in lane prompts (use the shared-constants pattern or instruct independent verification); (3) the synthesis reduce step owns the deliverable's evidentiary chain — every claim cites a URL, and the deliverable leads with an executive summary tying each key finding to a primary source URL with a source-validation verdict; (4) the workflow runs an always-on verify-and-converge stage (adversarial for thesis-advancing deliverables, confirmatory for purely descriptive ones) plus the load-bearing source-validation revisit pass before the executive summary is finalized, integrating verdicts under the verdict-ladder discipline that prevents verdict-mush.
+14. **Instruct tool use when the task obviously requires a specific tool** (e.g., research that requires current data → web search; document extraction → file tools; agentic file modification → Edit/Write). For ambiguous cases, let Opus 4.8's adaptive thinking decide which tools to invoke (4.8 also triggers required tool calls more reliably than 4.7). The goal is task-driven tool instruction, not a manual allowlist. Do not embed pre-specified tool inventories in the optimized prompt.
 
 ## Quality Assurance Checklist
 

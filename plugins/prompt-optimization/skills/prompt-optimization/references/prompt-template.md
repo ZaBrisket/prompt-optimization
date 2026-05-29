@@ -2,7 +2,7 @@
 
 > **Calibration stamp:** This reference is skill-internal methodology (prompt templates and embedding-without-bias rules), not Anthropic product facts — it does not require Phase 1.5 re-verification.
 
-This reference is loaded by Phase 4 (Produce Optimized Prompt). It provides the standard optimized-prompt template, the orchestrator template (which cross-references `orchestrated-research.md` Section 10 for the CLAUDE.md structure rather than restating it), and the embedding-without-bias rules that govern how Phase 2 landscape insights are surfaced in the prompt.
+This reference is loaded by Phase 4 (Produce Optimized Prompt). It provides the standard optimized-prompt template, the dynamic-workflow orchestrator template (which cross-references `dynamic-workflows.md` Section 10 for the CLAUDE.md structure rather than restating it), and the embedding-without-bias rules that govern how Phase 2 landscape insights are surfaced in the prompt.
 
 ## Partition discipline — read first
 
@@ -15,7 +15,7 @@ The skill's Deliverable Contract partitions content into two artifacts:
 
 ## Standard optimized-prompt template
 
-The standard template handles every non-orchestrated task type: code generation, data analysis, research / search, writing / content, agent / workflow, creative, multi-modal, API / integration, multi-model (subject-matter), knowledge work.
+The standard template handles every non-dynamic-workflow task type: code generation, data analysis, research / search, writing / content, agent / workflow, creative, multi-modal, API / integration, multi-model (subject-matter), knowledge work.
 
 ### What goes in the written file (the prompt body)
 
@@ -30,7 +30,7 @@ All sections below are **Required** unless explicitly marked **Optional** in the
 
 ## Context
 
-[The minimum context the executor needs to do the work. Source data references, prior decisions, audience definition, domain constraints. Spell out implicit assumptions — Opus 4.7 reads literally and will not infer omitted context.]
+[The minimum context the executor needs to do the work. Source data references, prior decisions, audience definition, domain constraints. Spell out implicit assumptions — Opus 4.8 reads literally and will not infer omitted context.]
 
 ## Requirements
 
@@ -66,73 +66,76 @@ Address the following sub-topics. Present multiple perspectives where they disag
 ````
 <environment>
 - Subscription tier: Claude Max 20x (no rate / token-budget constraints)
-- Context: Full available window (1M on Opus 4.7)
-- Model: claude-opus-4-7
-- Adaptive thinking: enabled (orchestrator + every subagent)
+- Context: Full available window (1M on Opus 4.8)
+- Model: claude-opus-4-8
+- Adaptive thinking: enabled (orchestrator + every workflow agent)
 - Tool selection: adaptive — no manual allowlist; instruct tools where the task obviously requires them
 </environment>
 
 <deployment_config>
-- Model: claude-opus-4-7
+- Model: claude-opus-4-8
 - Thinking: {type: "adaptive"}
-- Effort: xhigh  (or high / max — set per task)
+- Effort: high (default on 4.8) — set xhigh explicitly for coding/agentic; max for frontier
 - Output config: {format: <schema if structured outputs needed>, task_budget: <token cap if used>}
 - Max tokens: 64000 (or higher for long-document synthesis; re-baseline for the new tokenizer)
-- Context: full available (1M on Opus 4.7 — GA, no beta header)
+- Context: full available (1M on Opus 4.8 — GA, no beta header)
 - Streaming: <enabled / disabled per UX>; if streaming reasoning, set thinking.display = "summarized"
 - Beta headers: task-budgets-2026-03-13 if task budgets used; output-300k-2026-03-24 if Batches API
-- Sampling parameters: omitted (non-default temperature / top_p / top_k return 400 on Opus 4.7)
+- Sampling parameters: omitted (non-default temperature / top_p / top_k return 400 on Opus 4.8)
+- Mid-conversation system messages (optional): enable role:"system" turns after a user turn for long agentic loops — updates instructions without restating the system prompt and preserves cache (4.8 only; 4.7 rejects 400)
+- Fast mode (optional): speed:"fast" (API research preview) — up to 2.5x output tok/sec at premium pricing; latency-for-cost only, not for intelligence-sensitive work
 - Stop reasons to handle: refusal, model_context_window_exceeded, end_turn, max_tokens, tool_use
 </deployment_config>
 ````
 
 > **These two blocks render in the chat output above or below the prompt body — never inside it. The Phase 6B pre-write strip check verifies they are absent from the file at write time.**
 
-## Orchestrator prompt template
+## Dynamic-workflow orchestrator template
 
-The orchestrator template applies to the `orchestrated-research` task type. The deliverable is a `CLAUDE.md` file structured per **`orchestrated-research.md` Section 10**, which carries the full template body. This file does not restate that template — that would create two divergent specifications. Instead, the orchestrator template here is a thin pointer plus the chat-run-sheet partitioning that applies to orchestrated runs.
+The dynamic-workflow orchestrator template applies to the `orchestrated-research` task type. The deliverable is a `CLAUDE.md` file structured per **`dynamic-workflows.md` Section 10**, which carries the full template body. This file does not restate that template — that would create two divergent specifications. Instead, the orchestrator template here is a thin pointer plus the chat-run-sheet partitioning that applies to dynamic-workflow runs.
 
 ### Orchestrator template body — see Section 10
 
-The file body (the `CLAUDE.md` that gets written to disk) follows the structure in [orchestrated-research.md Section 10](orchestrated-research.md#10-the-orchestrator-claudemd-template). Reproduce that template into the deliverable file, populated with the Phase 0 / 1 / 2 / 2.5 outputs.
+The file body (the `CLAUDE.md` that gets written to disk) follows the structure in [dynamic-workflows.md Section 10](dynamic-workflows.md#10-the-dynamic-workflow-orchestrator-claudemd-template). Reproduce that template into the deliverable file, populated with the Phase 0 / 1 / 2 / 2.5 outputs.
 
 The orchestrator template covers, in order:
 
 1. Mission (one sentence)
 2. Scope (in / out)
-3. Subagent dispatch (per-subagent: scope, not-in-scope, output, source discipline, verification)
-4. Wave structure (if wave-based)
-5. Shared constants (if hybrid pattern)
-6. Synthesis (the primary quality gate — **seven** mandatory tasks; tasks 6 and 7 add the load-bearing source-validation revisit pass and the devil's-advocate integration)
-7. Wave 2 — Devil's advocate (mandatory, always-on; adversarial mode for thesis-advancing deliverables, confirmatory mode for purely descriptive ones)
-8. Deliverable (path + structure — **leads with the executive summary**)
-9. Remediation rule
+3. Workflow plan (fan-out lanes via `parallel()` for independent work with a barrier; staged work via `pipeline()` without a barrier; workflow agents do not spawn their own agents — the script orchestrates, nesting is one level)
+4. Verify-and-converge stage (mandatory, always-on; adversarial mode for thesis-advancing deliverables, confirmatory mode for purely descriptive ones; the bundled devil's-advocate agent is still dispatchable as `agentType:'devils-advocate'`)
+5. Source-validation revisit (load-bearing sources re-checked before synthesis)
+6. Synthesis reduce step (the primary quality gate — **seven** mandatory tasks; runs on the orchestrator main thread, not as a lane)
+7. Deliverable (path + structure — **leads with the executive summary**)
+8. Runtime notes (caps ≤16 concurrent agents / ≤1,000 total per run; spawned agents run `acceptEdits` mode; dynamic workflows are research preview; require Claude Code v2.1.154+; where the runtime is unavailable, fall back to parallel subagents via the Agent / Task tool)
 
 Refer to Section 10 for the per-element guidance and the authoring notes.
 
-**Also load [synthesis-deliverable.md](synthesis-deliverable.md)** alongside Section 10. It carries the executive-summary template (key findings → primary URLs + source-validation verdicts → per-finding conclusions → overall conclusion → devil's-advocate verdicts), the source-validation revisit protocol on load-bearing sources, the always-on devil's-advocate dispatch brief (adversarial / confirmatory modes), and the verdict-ladder discipline that prevents verdict-mush. Section 10 embeds the structural slots; `synthesis-deliverable.md` carries the content discipline that makes those slots load-bearing.
+**Also load [synthesis-deliverable.md](synthesis-deliverable.md)** alongside Section 10. It carries the executive-summary template (key findings → primary URLs + source-validation verdicts → per-finding conclusions → overall conclusion → verify-and-converge verdicts), the source-validation revisit protocol on load-bearing sources, the always-on verify-and-converge stage (adversarial / confirmatory), and the verdict-ladder discipline that prevents verdict-mush. Section 10 embeds the structural slots; `synthesis-deliverable.md` carries the content discipline that makes those slots load-bearing.
 
 ### Orchestrator chat run sheet — what goes alongside, not inside
 
 ````
 <environment>
 - Subscription tier: Claude Max 20x
-- Deployment target: Claude Code CLI (required for orchestrated research)
+- Deployment target: Claude Code (dynamic workflows; CLI/Desktop/IDE), v2.1.154+
 - Context: 1M Opus
-- Model: claude-opus-4-7
-- Adaptive thinking: enabled for orchestrator AND every subagent
-- Tool selection: adaptive — orchestrator dispatches via Agent / Task tool
+- Model: claude-opus-4-8
+- Adaptive thinking: enabled for orchestrator AND every workflow agent
+- Tool selection: adaptive — orchestrator script dispatches lanes deterministically via `parallel()` / `pipeline()` (fallback: Agent / Task tool where the runtime is unavailable)
 </environment>
 
 <deployment_config>
-- Orchestrator model: claude-opus-4-7
-- Subagent model: claude-opus-4-7[1m]  via  CLAUDE_CODE_SUBAGENT_MODEL=claude-opus-4-7[1m]
-- Effort: xhigh (Claude Code default on Opus 4.7) — set via /effort or --effort xhigh
+- Orchestrator model: claude-opus-4-8
+- Workflow-agent model: claude-opus-4-8[1m]  via  CLAUDE_CODE_SUBAGENT_MODEL=claude-opus-4-8[1m]
+- Effort: default high on 4.8; set xhigh via /effort or --effort xhigh (or /effort ultracode for xhigh + auto workflow orchestration)
 - Adaptive thinking: on by default in Claude Code; verify in /effort or /model
 - Permission mode: <auto / default for research-only runs; verify writes are authorized for deliverable-producing runs>
 - Hooks: <none, or list>
-- Subagent definitions location: <inline in CLAUDE.md, or .claude/agents/ files, or --agents JSON>
-- Subagent dispatch cap: <orchestrator does not exceed N subagents per wave>
+- Workflow agent definitions location: <inline in CLAUDE.md, or .claude/agents/ files, or --agents JSON>
+- Workflow fan-out: ~6 analytical lanes (synthesis bandwidth recommendation); runtime caps 16/1000
+- Workflow caps: ≤16 concurrent agents, ≤1,000 total per run
+- Workflow status: research preview; spawned agents run `acceptEdits` (file edits auto-approved) — guardrails matter more here, since 4.8 is somewhat less robust to prompt injection than 4.7
 </deployment_config>
 ````
 
@@ -172,8 +175,8 @@ Full version of the permissible / not-permissible table sketched in `SKILL.md` P
 
 ## Cross-references
 
-- See [opus-4-7-config.md](opus-4-7-config.md) for what goes in `<deployment_config>` and why.
-- See [orchestrated-research.md](orchestrated-research.md) Section 10 for the orchestrator `CLAUDE.md` body template.
+- See [opus-4-8-config.md](opus-4-8-config.md) for what goes in `<deployment_config>` and why.
+- See [dynamic-workflows.md](dynamic-workflows.md) Section 10 for the dynamic-workflow orchestrator `CLAUDE.md` body template.
 - See [task-heuristics.md](task-heuristics.md) for task-type-specific enhancements to apply within each template.
 - See `SKILL.md` Phase 4 for the embedding-landscape-without-bias decision tree.
 - See `SKILL.md` Phase 6B for the pre-write strip check that enforces the partition at write time.

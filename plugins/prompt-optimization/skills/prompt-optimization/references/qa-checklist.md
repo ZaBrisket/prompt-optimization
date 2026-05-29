@@ -50,14 +50,15 @@ Quick reference for the numeric gates used throughout this checklist. Per-phase 
 | Phase 2 query-taxonomy rows minimum | 5 of 8 | Phase 2 (2B.1) |
 | Phase 2 source-type categories minimum | 3 of 5 | Phase 2 (2B.2) |
 | Phase 2 search-count hard cap (2-S only) | 12 total | Phase 2 (2B.3) |
-| Phase 2-O subagent lanes (2-O only) | ≤ 6 | landscape-research.md § Phase 2 execution modes |
+| Phase 2-O fan-out lanes (2-O only) | ≤ 6 (synthesis bandwidth) | landscape-research.md § Phase 2 execution modes |
 | Phase 2-O search budget (2-O only) | per-lane; no global cap | landscape-research.md § Phase 2 execution modes |
+| Dynamic-workflow concurrency cap | ≤16 concurrent / ≤1,000 total per run | dynamic-workflows.md §9 |
 | Phase 2.5 research-informed questions | 5–10 | Phase 2.5 |
 | Phase 2.5 questions per widget batch | ≤3 | Phase 2.5 batching |
 | Executive-summary key findings (orchestrated-research deliverable) | typically 3–7 | synthesis-deliverable.md § Executive summary template |
 | Load-bearing source URLs per key finding | ≥1 | synthesis-deliverable.md § Source-validation revisit protocol |
-| Devil's-advocate dispatches per orchestrated deliverable | exactly 1 (always-on) | synthesis-deliverable.md § Devil's-advocate dispatch brief |
-| Devil's-advocate verdict-ladder credibility floor | Tier-2-or-better citation | synthesis-deliverable.md § Verdict-ladder discipline |
+| Verify-and-converge stage per orchestrated deliverable | exactly 1 (always-on) | synthesis-deliverable.md § Verify-and-converge stage brief |
+| Verify-and-converge verdict-ladder credibility floor | Tier-2-or-better citation | synthesis-deliverable.md § Verdict-ladder discipline |
 
 ## Track applicability summary
 
@@ -115,7 +116,7 @@ Full-track pass requires **all** of:
 Pass requires **all** of:
 
 - [ ] All four mandatory queries (Q1 platform best practices, Q2 task-type guidance, Q3 deployment configuration, Q4 model-card + flagship-currency check) were executed.
-- [ ] Model-version currency confirmed (Query 4, broadened): the search returned the named flagship (`claude-opus-4-7`) as current, OR a newer flagship was detected AND the optimized prompt's deployment configuration was updated to use it. The model-version substitution did not fire when no drift was surfaced.
+- [ ] Model-version currency confirmed (Query 4, broadened): the search returned the named flagship (`claude-opus-4-8`) as current, OR a newer flagship was detected AND the optimized prompt's deployment configuration was updated to use it. The model-version substitution did not fire when no drift was surfaced.
 - [ ] Conditional Query 5 fired when any of its triggers were met (draft references uncovered feature; baseline >30 days stale; deprecation notice surfaced).
 - [ ] Queries were scoped to authoritative Anthropic sources (`docs.anthropic.com`, `docs.claude.com`, `code.claude.com`, `platform.claude.com`, `anthropic.com`, system cards).
 - [ ] At least one query targeted features unique to the confirmed deployment target.
@@ -132,14 +133,14 @@ Pass requires **all** of:
 
 Pass requires **all** of (applicable only when Phase 2 ran — Full track with a non-mechanical draft; on the Express track Phase 2 is `N/A — Express track`, and on the Full track for a mechanical draft the skip flag must be set explicitly):
 
-- [ ] Execution mode (2-S single-threaded or 2-O orchestrated fan-out) was selected on the published objective criteria (Agent/Task tool availability + draft depth), and the mode + one-line rationale is recorded in the chat run sheet and the Phase 5 delta.
+- [ ] Execution mode (2-S single-threaded or 2-O orchestrated fan-out) was selected on the published objective criteria (dynamic-workflow runtime or Agent/Task tool availability + draft depth), and the mode + one-line rationale is recorded in the chat run sheet and the Phase 5 delta.
 - [ ] Step 2A produced the Topic Identification & Draft Deconstruction artifact with all four sub-sections (topical content, implicit framing, stakeholder map, contested terminology).
 - [ ] Step 2A's stakeholder map names a third-cell "affected but underrepresented" entry — even if it required guessing.
 - [ ] Step 2B's query taxonomy ran searches across at least 5 of the 8 taxonomy rows, with skipped rows explicitly justified.
 - [ ] Step 2B's source corpus represents at least 3 of the 5 source-type categories.
 - [ ] Step 2B' adversarial pass ran (unless explicitly skipped with a one-sentence "no implicit thesis" justification for a purely mechanical / descriptive draft).
 - [ ] Step 2B' searches against the dissenting framing ran at comparable count to Step 2B's initial searches (parity, not a single token mention).
-- [ ] **Mode-scoped search budget:** in **2-S**, total Phase 2 search count did not exceed 12 (the 2B.3 hard cap); in **2-O**, no global cap applies — instead ≤ 6 subagent lanes, each within its per-lane search budget, and at most one remediation pass.
+- [ ] **Mode-scoped search budget:** in **2-S**, total Phase 2 search count did not exceed 12 (the 2B.3 hard cap); in **2-O**, no global cap applies — instead ≤ 6 lanes / workflow agents, each within its per-lane search budget, and at most one remediation pass.
 - [ ] Step 2C synthesis is structured per the artifact template (Major Sub-Domains, Frameworks, Areas of Debate, Temporal, Edge Cases, Coverage Gaps).
 - [ ] Every item in every category has a Confidence stamp.
 - [ ] Step 2D neutrality check passed: no embedded conclusions, topics not positions, debates not winners.
@@ -149,12 +150,12 @@ Pass requires **all** of (applicable only when Phase 2 ran — Full track with a
 
 **When Phase 2 ran in 2-O (orchestrated fan-out), additionally:**
 
-- [ ] Step 2A ran in the orchestrator and was passed to every subagent as the shared-constant artifact (not re-derived per lane).
-- [ ] Decomposition used a Phase-2-native axis (sub-domain / source-type / query-taxonomy cluster), with ≤ 6 subagent lanes.
+- [ ] Step 2A ran in the orchestrator and was passed to every lane / workflow agent as the shared-constant artifact (not re-derived per lane).
+- [ ] Decomposition used a Phase-2-native axis (sub-domain / source-type / query-taxonomy cluster), with ≤ 6 lanes / workflow agents.
 - [ ] A dedicated adversarial-pass lane was dispatched (the 2B' equivalent, searched at parity within its own budget).
 - [ ] 2C synthesis and the 2D / 2D' gates ran on the **aggregate cross-lane corpus** — not per lane. The 3-of-5 source-type floor is verified across the full corpus.
 - [ ] At most one remediation pass fired; a second remediation would mean re-decomposing at 2A.
-- [ ] Subagent briefs, the dispatch graph, and per-lane findings packs are confirmed internal-only (partition holds identically in 2-O).
+- [ ] Lane prompts, the dynamic-workflow orchestration spec, and per-lane findings packs are confirmed internal-only (partition holds identically in 2-O).
 
 ## Phase 2.5 — Research-Informed Clarification
 
@@ -178,7 +179,7 @@ Pass requires **all** of:
 - [ ] Coverage gaps from Phase 2 identified (respecting Phase 2.5 scope decisions — excluded sub-domains are not flagged).
 - [ ] Precision deficits identified: vague verbs, implicit assumptions, ambiguous scope, undefined controversy handling.
 - [ ] Phase 1.5 calibration delta cross-referenced — new anti-patterns or deprecated behaviors from the delta are folded in.
-- [ ] Every applicable row of `task-heuristics.md §Opus 4.7 Anti-Patterns` was checked against the draft; matches were noted for Phase 4 to address and flagged for the Phase 5 delta.
+- [ ] Every applicable row of `task-heuristics.md §Opus 4.8 Anti-Patterns` was checked against the draft; matches were noted for Phase 4 to address and flagged for the Phase 5 delta.
 - [ ] Comprehensiveness deficits identified: missing in-scope sub-domains, undefined debate-handling, undefined temporal scope, unaddressed edge cases.
 
 ## Phase 4 — Produce Optimized Prompt
@@ -187,7 +188,7 @@ Pass requires **all** of:
 
 - [ ] Prerequisite check passed: Phases 0–3 all complete, widget selections recorded, deltas produced. No cold-start Phase 4.
 - [ ] The correct template was selected (standard or orchestrator) based on Phase 1 task type.
-- [ ] The orchestrator template (for orchestrated-research) references `orchestrated-research.md` Section 10 (the orchestrator CLAUDE.md structure) rather than re-stating it.
+- [ ] The orchestrator template (for orchestrated-research) references `dynamic-workflows.md` Section 10 (the orchestrator CLAUDE.md structure) rather than re-stating it.
 - [ ] The optimized prompt is RUNNABLE — no unresolved placeholders.
 - [ ] The optimized prompt is COMPREHENSIVE — every Phase 2 sub-domain that remained in scope after Phase 2.5 is addressed.
 - [ ] The optimized prompt is NEUTRAL — no embedded conclusions. Spot-check against the embedding-landscape-without-bias table in `prompt-template.md`.
@@ -196,7 +197,7 @@ Pass requires **all** of:
 - [ ] Aggressive emphasis markers (CRITICAL!!!, ALL-CAPS commands) are stripped per Meta-Rule 10.
 - [ ] Code / agentic prompts include over-engineering guardrails and completion-verification (Meta-Rule 11).
 - [ ] API-targeted prompts have deployment configuration in the chat run sheet covering: thinking mode, effort, context, compaction, output ceiling, streaming, beta headers (Meta-Rule 12).
-- [ ] Orchestrated-research prompts explicitly instruct subagent dispatch (Meta-Rule 13) and never embed unverified numerical estimates.
+- [ ] Orchestrated-research prompts conform to Meta-Rule 13 (dynamic-workflow orchestration spec with `parallel` / `pipeline` primitives; subagent-dispatch fallback only where the workflow runtime is unavailable) and never embed unverified numerical estimates.
 - [ ] Tool-use instructions follow Meta-Rule 14: direct instruction when the task obviously needs a specific tool; otherwise let adaptive thinking decide. No pre-specified manual tool inventory.
 
 **When the deliverable is an orchestrated-research CLAUDE.md (task type `orchestrated-research`), additionally:**
@@ -209,12 +210,17 @@ Pass requires **all** of:
 - [ ] A per-finding conclusion is stated for each key finding ("From key finding N → …").
 - [ ] The overall conclusion is traceable to the per-finding conclusions — every claim in the overall conclusion derives from at least one per-finding conclusion above.
 - [ ] The source-validation revisit pass executed on every load-bearing URL; the per-source verdicts are recorded in the source-validation log; `not verified` and `unreachable` load-bearing sources either struck the supported key finding, forced re-derivation from a different sourced support, or downgraded the key finding's confidence visibly in the executive summary. Silent retention of an unverified key finding is a material gap.
-- [ ] The devil's-advocate / confirmatory subagent was dispatched (always-on); the mode (adversarial / confirmatory) was chosen using the published sniff and a one-sentence rationale is recorded in the executive summary's devil's-advocate block.
+- [ ] The verify-and-converge stage ran (always-on; adversarial / confirmatory); the mode (adversarial / confirmatory) was chosen using the published sniff and a one-sentence rationale is recorded in the executive summary's devil's-advocate block.
 - [ ] In adversarial mode, per-finding verdicts (`confirmed` / `refuted by adversarial pass` / `unresolved — both views credible`) were integrated under the verdict-ladder discipline — `unresolved` fires only when adversarial evidence meets the Tier-2-or-better credibility floor from `calibration-protocol.md` § Source trust hierarchy. Default is `confirmed` when nothing meets the bar.
 - [ ] Verdict-mush absent — not every key finding is `unresolved`. (If it is, the verdict-ladder discipline was not applied.)
 - [ ] In confirmatory mode, every included entry was audited (`included correctly` / `included in error` / `boundary case`) and the missed-entries block was populated or explicitly empty.
 - [ ] Every claim in the deliverable body carries a URL; synthesis-agent integrative reasoning across multiple cited findings is explicitly framed as such.
-- [ ] The source-validation log and the devil's-advocate findings pack appear in the chat run sheet only — never in the written deliverable. (Phase 6B pre-write strip check verifies this.)
+- [ ] The deliverable's workflow plan uses `parallel` for independent lanes and `pipeline` for staged work (per `dynamic-workflows.md` §4).
+- [ ] A verify-and-converge stage is present in the workflow plan (`dynamic-workflows.md` §8) — always-on, adversarial or confirmatory.
+- [ ] The run respects the runtime envelope: ≤16 concurrent agents and ≤1,000 total agents per run (`dynamic-workflows.md` §9).
+- [ ] The chat run sheet surfaces research-preview status and the Claude Code v2.1.154+ version gate for the dynamic-workflow runtime.
+- [ ] Lane outputs are schema-structured (each `agent` call carries a `schema` that bounds the return to the fields the synthesis reduce step consumes).
+- [ ] The source-validation log and the verify-and-converge findings pack appear in the chat run sheet only — never in the written deliverable. (Phase 6B pre-write strip check verifies this.)
 
 ## Phase 5 — Delta Analysis
 
@@ -222,7 +228,7 @@ Pass requires **all** of:
 
 - [ ] Key changes are bulleted with rationale.
 - [ ] Calibration-driven changes are stated explicitly (or "baseline confirmed current" when sweep was clean).
-- [ ] Landscape-driven additions reference Phase 2 findings that landed in the prompt. When Phase 2 ran in 2-O, the delta names the execution mode, the subagent lanes dispatched, and whether a remediation pass fired.
+- [ ] Landscape-driven additions reference Phase 2 findings that landed in the prompt. When Phase 2 ran in 2-O, the delta names the execution mode, the lanes / workflow agents dispatched, and whether a remediation pass fired.
 - [ ] Clarification-driven refinements reference Phase 1 / 2.5 widget selections that shaped the prompt, including "Other (I'll specify)" integrations.
 - [ ] Deferred Phase 2.5 questions are listed with the assumptions made on their behalf.
 - [ ] Neutrality attestation is included — explicit statement that no pre-judged conclusions are embedded.
@@ -239,7 +245,7 @@ Pass requires **all** of:
 - [ ] The summary table covers Phases 0, 1, 1.5, 2 (or N/A), 2.5 (or N/A), 3–4, 5 with PASS / FAIL per row.
 - [ ] The summary lives in the chat run sheet — never in the written file, never as frontmatter comments, never as an end-of-file block.
 - [ ] Audit date carries the session's real current date.
-- [ ] Material gaps (per the `SKILL.md` Phase 6A definition) were fixed before the audit was declared clean. Examples: missing calibration delta items, ignored widget selections, stale 4.6-era patterns, missing deployment config block, missing completion-verification on file-writing prompts, Opus 4.7 anti-patterns left unaddressed, environment/QC content leaked into the file body.
+- [ ] Material gaps (per the `SKILL.md` Phase 6A definition) were fixed before the audit was declared clean. Examples: missing calibration delta items, ignored widget selections, stale pre-4.8 patterns, missing deployment config block, missing completion-verification on file-writing prompts, Opus 4.8 anti-patterns left unaddressed, environment/QC content leaked into the file body.
 - [ ] Minor gaps (stylistic, capitalization, formatting variance) were fixed silently.
 - [ ] If unsure which tier a gap belonged to, it was treated as material — the asymmetry of cost favored documentation.
 
@@ -256,9 +262,9 @@ Pass requires **all** of:
   - [ ] No preamble ("Here is the optimized prompt:") or postamble ("Saved to:") inside the file body.
   - [ ] No "Generated by prompt-optimization skill" attribution.
   - [ ] No Phase 2 internal working artifacts (2A block, 2B log, 2C synthesis, 2D' check).
-  - [ ] No orchestrated-research deliverable working artifacts (source-validation log, devil's-advocate findings pack, synthesis-agent's pre-validation key-finding drafts, verbatim source quotes captured during validation).
+  - [ ] No orchestrated-research deliverable working artifacts (the dynamic-workflow orchestration spec and lane prompts, the source-validation log, the verify-and-converge findings pack, synthesis-agent's pre-validation key-finding drafts, verbatim source quotes captured during validation).
 - [ ] The file was written to the externally-specified path if one was provided; otherwise to the current working folder with a descriptive filename.
-- [ ] The file landed on disk — verified by re-reading after write (Opus 4.7 occasionally misreports completion; the strip check + read-back is the guardrail).
+- [ ] The file landed on disk — verified by re-reading after write (defense-in-depth: Opus 4.8 is materially more reliable at reporting completion than 4.7, but the strip check + read-back is the guardrail regardless).
 - [ ] The folder-relative path was reported in the chat response.
 - [ ] In claude.ai chat (where file writing is unavailable), the inline prompt block was preserved and the user was directed to copy only the prompt block — not the surrounding run sheet.
 

@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] — 2026-05-28
+
+Retarget to Claude Opus 4.8 and pivot the orchestrated-research deliverable from manual parallel-subagent dispatch to Claude Code **dynamic workflows**. This is a deliverable-shape change; the methodology, phases, and Deliverable Contract are otherwise intact.
+
+### Changed
+- Retargeted the entire skill from Claude Opus 4.7 to Claude Opus 4.8: model id `claude-opus-4-8` / 1M alias `claude-opus-4-8[1m]`; **effort default is now `high`** on all surfaces (was `xhigh` on Claude Code under 4.7) — `xhigh` is now set explicitly for coding/agentic work; calibration stamps and Phase 1.5 query templates updated; sources re-verified 2026-05-28.
+- The `orchestrated-research` deliverable is now a CLAUDE.md that orchestrates a Claude Code **dynamic workflow** (a JavaScript orchestration script Claude authors and a runtime executes), replacing the parallel-subagent-dispatch CLAUDE.md. The workflow script fans out deterministically (`parallel` / `pipeline`), so the 4.7 "orchestrator under-delegation" premise is obsolete.
+- The always-on devil's-advocate dispatch is now the workflow's **verify-and-converge stage** (independent adversarial agents review findings, vote, converge); the verdict-ladder discipline is unchanged. The bundled `landscape-research` and `devils-advocate` agents are now dispatched as workflow `agentType`s (subagent fallback retained).
+- Converted the skill's own internal Phase 2-O landscape research to dispatch a dynamic workflow (with parallel-subagent / single-threaded 2-S fallback).
+- `SKILL.md` Meta-Rule 13, Phase 2/4/6B, and the References Guide updated for dynamic workflows; `task-heuristics.md` anti-pattern table reframed (rows for workflow-inline work, cap-ignoring, and write-capable-workflow guardrails added) and retitled `§Opus 4.8 Anti-Patterns`.
+- Added Opus 4.8 capabilities where relevant: mid-conversation system messages, fast mode, the 1,024-token prompt-cache minimum, documented refusal `stop_details`, improved tool triggering and compaction handling, and the honesty gains (the completion-verification guardrail is now framed as defense-in-depth). Surfaced the 4.8 prompt-injection-robustness nuance: guardrails matter more for write-capable workflows (agents run `acceptEdits`).
+- `platform-baseline.md` gained a Dynamic-workflows capability row; `qa-checklist.md` gained workflow-deliverable gates; both READMEs, `marketplace.json`, and `plugin.json` updated.
+
+### Renamed
+- `references/opus-4-7-config.md` → `references/opus-4-8-config.md`.
+- `references/orchestrated-research.md` → `references/dynamic-workflows.md` (now the dynamic-workflow operational guide; Section 10 is the deliverable template).
+
 ## [0.2.1] — 2026-05-28
 
 UX cleanup. The plugin previously shipped both a `prompt-optimization` skill and an `/optimize-prompt` slash command that wrapped the skill — for first-time users this surfaced as two near-identical entries in the skills menu, with the most plugin-name-shaped invocation actually being the wrong one (the command took args; the skill is the methodology). Consolidating to one entry point.
@@ -76,6 +93,7 @@ Synthesis-as-owner: every orchestrated-research deliverable the skill produces n
 - Orchestrated Phase 2 landscape-research mode (2-O) with full propagation into the
   QA layer.
 
+[1.0.0]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v1.0.0
 [0.2.1]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v0.2.1
 [0.2.0]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v0.2.0
 [0.1.1]: https://github.com/ZaBrisket/prompt-optimization/releases/tag/v0.1.1

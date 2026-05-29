@@ -34,6 +34,10 @@ Count signal hits from the list below, then apply the 3-tier rule.
 **Signals to count:**
 
 - "Parallel agents" / "subagents" / "parallel subagents"
+- "Workflow" / "dynamic workflow" / "dynamic workflows"
+- "ultracode" / `/effort ultracode` / `/deep-research`
+- `.claude/workflows` path references
+- "Codebase-wide migration" / "codebase-wide audit" / migration or audit at scale
 - "Dispatch" / "fan out" / "fan-out" / "fanout"
 - "Synthesize" / "synthesis" / "synthesizer"
 - "Wave 1" / "wave-based" / "stage 1 / stage 2" sequencing language
@@ -61,7 +65,7 @@ The widget itself always fires; the user confirms or edits.
 | Signal in the draft | Inferred target | Default confidence |
 |---------------------|-----------------|--------------------|
 | "API," `requests.post(...)`, model ID strings in code form, request/response examples | Claude API | High |
-| `claude -p`, CLI invocations, `CLAUDE.md`, `.claude/` paths, subagent dispatch | Claude Code CLI | High |
+| `claude -p`, CLI invocations, `CLAUDE.md`, `.claude/` paths, `.claude/workflows`, dynamic workflows, subagent dispatch | Claude Code CLI | High |
 | Cowork name reference, "desktop," persistent memory across sessions, file-folder workflows | Cowork (Desktop) | High when Cowork named; Medium when desktop-shape inferred |
 | "Chat," "in claude.ai," interactive single-conversation shape, no file write expected | claude.ai (chat) | Medium (chat is the default fallback when no other signal is present) |
 | **Multiple signals, e.g., orchestrated-research + Cowork** | Surface the conflict — orchestrated-research requires CLI | Low confidence on either; route through a follow-up widget |
@@ -91,7 +95,7 @@ Inferred from task type and domain, not from explicit draft language (drafts rar
 | Research / search | Narrow source coverage; uncritical adoption of dominant framing; stale information; hallucinated citations |
 | Writing / content | Off-brand voice; factual drift; verbose hedging; off-target audience |
 | Agent / workflow | Misreported completion (writes to disk); destructive action on the model's judgment; over-broad scope; cascading errors across steps |
-| Orchestrated research | Under-delegation (orchestrator does the work itself); duplicate subagent scope; shallow synthesis; unverified numeric estimates passed between agents |
+| Orchestrated research | Workflow script does the work inline instead of fanning out; duplicate lane scope; shallow synthesis (no verify-and-converge stage); unverified numeric estimates passed between agents |
 | Creative | Generic / safe output; off-genre voice; constraint violations |
 | Multi-modal | Misread image content; wrong coordinates (4.6-era scaling); excessive image-token cost |
 | API / integration | 400 errors from deprecated parameters; schema-violation outputs; mishandled stop reasons (`refusal`, `model_context_window_exceeded`) |
@@ -162,4 +166,4 @@ The user confirms or edits each via Widget Calls 1 and 2. Inferences populate op
 - See `SKILL.md` Phase 0 Step 0C for the structured output template.
 - See `SKILL.md` Phase 1 for how the inferences populate Widget Calls 1, 2, 3a, 3b.
 - See [task-heuristics.md](task-heuristics.md) for task-type-specific handling once task type is confirmed.
-- See [orchestrated-research.md](orchestrated-research.md) when the sniff rule activates and orchestrated-research becomes the lead option.
+- See [dynamic-workflows.md](dynamic-workflows.md) when the sniff rule activates and orchestrated-research becomes the lead option.
